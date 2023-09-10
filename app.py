@@ -7,28 +7,25 @@ from sqlalchemy.exc import IntegrityError
 import argparse
 import os
 
-db_dir = 'db'
-if not os.path.exists(db_dir):
-    os.makedirs(db_dir)
-logging.basicConfig(level=logging.INFO)
-db = SQLAlchemy(app)
+# Initialize Flask app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////usr/app/src/db/users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'supersecretkey'
-with app.app_context():
-    db.create_all()
-    initial_status = SystemStatus(online=False)
-    db.session.add(initial_status)
-    db.session.commit()
 
+# Initialize SQLAlchemy with app
+db = SQLAlchemy(app)
+
+# Initialize session
 Session(app)
 
+# Define models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     approved = db.Column(db.Boolean, default=False)
+
 class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     online = db.Column(db.Boolean, default=False)
@@ -190,20 +187,20 @@ if __name__ == '__main__':
 
         # Create a new database
         with app.app_context():  # Push an application context
-                db.create_all()
-                initial_status = SystemStatus(online=False)
-                db.session.add(initial_status)
-                db.session.commit()
+            db.create_all()
+            initial_status = SystemStatus(online=False)
+            db.session.add(initial_status)
+            db.session.commit()
 
             # Create initial admin account
-                admin_user = User(username='admin', password='password', approved=True)
-                try:
-                    db.session.add(admin_user)
-                    db.session.commit()
-                    print("Admin account created.")
-                except IntegrityError:
-                    db.session.rollback()
-                    print("Admin account already exists.")
+            admin_user = User(username='admin', password='password', approved=True)
+            try:
+                db.session.add(admin_user)
+                db.session.commit()
+                print("Admin account created.")
+            except IntegrityError:
+                db.session.rollback()
+                print("Admin account already exists.")
 
         print("Database setup complete.")
         exit(0)  # Exit the script
