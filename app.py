@@ -5,7 +5,32 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask import flash
+import argparse
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run the Flask app.')
+    parser.add_argument('--setup', action='store_true', help='Set up database.')
+    args = parser.parse_args()
+
+    if args.setup:
+        print("Setting up database...")
+        db.create_all()
+        
+        # Create initial admin account
+        admin_user = User(username='admin', password='password', approved=True)
+        try:
+            db.session.add(admin_user)
+            db.session.commit()
+            print("Admin account created.")
+        except IntegrityError:
+            db.session.rollback()
+            print("Admin account already exists.")
+        
+        print("Database setup complete.")
+        exit(0)  # Exit the script
+    else:
+        app.run(host='0.0.0.0', port=8092)
+        
 
 logged_in_users = set()
 
