@@ -7,9 +7,24 @@ from sqlalchemy.exc import IntegrityError
 from flask import flash
 import argparse
 
+<<<<<<< HEAD
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
+=======
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    approved = db.Column(db.Boolean, default=False)  # New column
+
+
+
+>>>>>>> 7af758761013c7b2bfb7109109e99b425f05ee9c
 
 
 if __name__ == '__main__':
@@ -35,22 +50,13 @@ if __name__ == '__main__':
         exit(0)  # Exit the script
     else:
         app.run(host='0.0.0.0', port=8092)
-        
+
 
 logged_in_users = set()
 
 
 
 logging.basicConfig(level=logging.INFO)
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-db = SQLAlchemy(app)
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    approved = db.Column(db.Boolean, default=False)  # New column
 
 
 
