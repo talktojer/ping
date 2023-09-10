@@ -51,3 +51,22 @@ def logout():
     if username:
         logged_in_users.discard(username)  # Remove username from set
     return redirect('/')
+
+
+@auth_routes.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username'].lower()
+        password = request.form['password']
+        # Check the new_users_approvals variable to set the approved attribute
+        approved_status = True if new_users_approvals == 0 else False
+        new_user = User(username=username, password=password, approved=approved_status)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+
+            if new_users_approvals == 0:
+                # Send a ping after successful registration
+                payload = f'{username} just registered!'
+                response = requests.post('http://ntfy.jersweb.net/ping-jer', data=payload)
+                response.raise_for_status()
