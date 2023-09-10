@@ -110,7 +110,9 @@ def get_status():
 @app.route('/', methods=['GET'])
 def index():
     logging.info("Inside index")
-    return render_template_string(open('index.html').read(), username=session.get('username'))
+    admin_link = "<a href='/admin'>Go to Admin Page</a>" if session.get('username') == 'admin' else ""
+    return render_template_string(open('index.html').read() + admin_link, username=session.get('username'))
+
 
 @app.route('/admin', methods=['GET'])
 def admin():
