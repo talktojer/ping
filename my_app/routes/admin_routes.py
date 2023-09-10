@@ -1,4 +1,9 @@
-from flask import Blueprint
+from flask import Blueprint, request, flash, session, redirect, render_template_string
+from datetime import datetime
+from my_app.models import User
+from my_app import db  # Import db from my_app
+from sqlalchemy.exc import IntegrityError
+import requests
 
 admin_routes = Blueprint('admin_routes', __name__)
 
