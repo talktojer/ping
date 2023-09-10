@@ -6,7 +6,12 @@ import requests
 
 
 general_routes = Blueprint('general_routes', __name__)
-
+def get_active_users():
+    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
+    active_users = User.query.filter(User.last_active >= five_minutes_ago).all()
+    print("Active users:", active_users)  # Debug line
+    return active_users
+    
 @general_routes.route('/', methods=['GET'])
 def index():
     username = session.get('username')
