@@ -1,35 +1,29 @@
-from flask import Flask, request, render_template_string, jsonify, session, redirect
+from flask import Flask, request, render_template_string, jsonify, session, redirect, flash
 from flask_session import Session
 import logging
 import requests
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
-from flask import flash
 import argparse
-logged_in_users = set()
-
-
 
 logging.basicConfig(level=logging.INFO)
 
-
-
-# Session Configuration
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'supersecretkey'
+
+db = SQLAlchemy(app)
 Session(app)
-
-global_online_status = False  # Global variable for online status
-
-
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    approved = db.Column(db.Boolean, default=False)  # New column
+    approved = db.Column(db.Boolean, default=False)
 
-
+logged_in_users = set()
+global_online_status = False
 
 @app.route('/admin/add_user', methods=['GET', 'POST'])
 def add_user():
@@ -173,10 +167,9 @@ if __name__ == '__main__':
 
     if args.setup:
         print("Setting up database...")
-        with app.app_context():  # Push an application context
+        with app.app_context():
             db.create_all()
-        
-            # Create initial admin account
+            
             admin_user = User(username='admin', password='password', approved=True)
             try:
                 db.session.add(admin_user)
@@ -187,7 +180,6 @@ if __name__ == '__main__':
                 print("Admin account already exists.")
         
         print("Database setup complete.")
-        exit(0)  # Exit the script
+        exit(0)
     else:
         app.run(host='0.0.0.0', port=8092)
-    
