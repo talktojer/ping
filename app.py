@@ -16,7 +16,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////usr/app/src/db/users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'supersecretkey'
-
+    with app.app_context():
+        db.create_all()
+        initial_status = SystemStatus(online=False)
+        db.session.add(initial_status)
+        db.session.commit()
 db = SQLAlchemy(app)
 Session(app)
 
@@ -25,6 +29,9 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     approved = db.Column(db.Boolean, default=False)
+class SystemStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    online = db.Column(db.Boolean, default=False)
 
 logged_in_users = set()
 global_online_status = False
@@ -91,13 +98,17 @@ def show_logged_in_users():
 def toggle_online():
     if not session.get('logged_in'):
         return redirect('/login')
-    global global_online_status
-    global_online_status = not global_online_status
-    return jsonify({"status": "success", "online": global_online_status}), 200
+    status = SystemStatus.query.first()
+    status.online = not status.online
+    db.session.commit()
+    return jsonify({"status": "success", "online": status.online}), 200
+
 
 @app.route('/status', methods=['GET'])
 def get_status():
-    return jsonify({"online": global_online_status}), 200
+    status = SystemStatus.query.first()
+    return jsonify({"online": status.online}), 200
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -179,7 +190,10 @@ if __name__ == '__main__':
 
         # Create a new database
         with app.app_context():  # Push an application context
-            db.create_all()
+                db.create_all()
+                initial_status = SystemStatus(online=False)
+                db.session.add(initial_status)
+                db.session.commit()
 
             # Create initial admin account
             admin_user = User(username='admin', password='password', approved=True)
