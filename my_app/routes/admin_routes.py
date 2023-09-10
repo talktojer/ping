@@ -44,3 +44,14 @@ def toggle_online():
     status.online = not status.online
     db.session.commit()
     return jsonify({"status": "success", "online": status.online}), 200
+
+@admin_routes.route('/admin/approve/<int:user_id>', methods=['GET'])
+def approve_user(user_id):
+    if not session.get('logged_in') or session.get('username') != 'admin':
+        return redirect('/login')
+    user = User.query.get(user_id)
+    if user:
+        user.approved = True
+        db.session.commit()
+        return redirect('/admin')
+    return "User not found."
