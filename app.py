@@ -165,7 +165,7 @@ def admin():
     return render_template_string(open('admin.html').read(), username=session.get('username'))
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
+def user_register():
     if request.method == 'POST':
         username = request.form['username'].lower()
         password = request.form['password']
