@@ -14,7 +14,15 @@
     <p>System Status</p>
     <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
     
-
+    <div style="float: right;">
+        <h3>Logged In Users:</h3>
+        <ul>
+            {% for user in logged_in_users %}
+                <li>{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
 
     <footer>
         {% if username %}

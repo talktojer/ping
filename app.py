@@ -25,6 +25,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     approved = db.Column(db.Boolean, default=False)
+    is_logged_in = db.Column(db.Boolean, default=False)
 
 class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,6 +63,8 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username, password=password).first()
         if user:
+            user.is_logged_in = True
+            db.session.commit()
             if user.username == 'admin' or user.approved:
                 session['logged_in'] = True
                 session['username'] = username
@@ -78,6 +81,11 @@ def login():
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    username = session.pop('username', None)
+    user = User.query.filter_by(username=username).first()
+    if user:
+        user.is_logged_in = False
+        db.session.commit()    
     username = session.pop('username', None)
     session.pop('logged_in', None)
     if username:
@@ -109,8 +117,9 @@ def get_status():
 
 @app.route('/', methods=['GET'])
 def index():
+    logged_in_users = User.query.filter_by(is_logged_in=True).all()
+    return render_template_string(open('index.html').read(), username=session.get('username'), logged_in_users=logged_in_users)
 
-    return render_template_string(open('index.html').read(), username=session.get('username'))
 
 
 
