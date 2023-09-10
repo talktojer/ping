@@ -1,5 +1,9 @@
-from flask import Blueprint
-from flask import flash
+from flask import Blueprint, request, flash, session, redirect, render_template_string
+from datetime import datetime
+from models import User  # Replace 'your_project' with the actual name of your project
+import db  # Replace 'your_project' with the actual name of your project
+from sqlalchemy.exc import IntegrityError
+import requests
 
 auth_routes = Blueprint('auth_routes', __name__)
 
