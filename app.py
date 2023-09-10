@@ -64,7 +64,7 @@ def login():
                 flash('Login successful', 'success')
                 return redirect('/')
             else:
-                return 'Your account is pending approval. <a href="/">Go back to main page</a>'
+                return "Your account is pending approval."
         else:
             return "Invalid credentials, <a href='/login'>try again</a> or <a href='/admin/add_user'>register</a>."
     return render_template_string(open('login.html').read())
@@ -131,12 +131,11 @@ def register():
         try:
             db.session.add(new_user)
             db.session.commit()
-            return 'Registration successful. Waiting for admin approval. <a href="/">Go back to main page</a>'
+            return "Registration successful. Waiting for admin approval."
         except IntegrityError:
             db.session.rollback()
-            return 'Username already exists. <a href="/">Go back to main page</a>'
+            return "Username already exists."
     return render_template_string(open('register.html').read())
-
 
 @app.route('/admin/approve/<int:user_id>', methods=['GET'])
 def approve_user(user_id):
