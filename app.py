@@ -6,29 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask import flash
 import argparse
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    approved = db.Column(db.Boolean, default=False)  # New column
-
-
 logged_in_users = set()
 
 
 
 logging.basicConfig(level=logging.INFO)
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-db = SQLAlchemy(app)
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    approved = db.Column(db.Boolean, default=False)  # New column
-
 
 
 
@@ -38,6 +20,16 @@ app.config['SECRET_KEY'] = 'supersecretkey'
 Session(app)
 
 global_online_status = False  # Global variable for online status
+
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    approved = db.Column(db.Boolean, default=False)  # New column
+
+
 
 @app.route('/admin/add_user', methods=['GET', 'POST'])
 def add_user():
