@@ -5,7 +5,11 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 import argparse
+import os
 
+db_dir = 'db'
+if not os.path.exists(db_dir):
+    os.makedirs(db_dir)
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
