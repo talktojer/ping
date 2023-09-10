@@ -16,11 +16,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////usr/app/src/db/users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'supersecretkey'
-    with app.app_context():
-        db.create_all()
-        initial_status = SystemStatus(online=False)
-        db.session.add(initial_status)
-        db.session.commit()
+with app.app_context():
+    db.create_all()
+    initial_status = SystemStatus(online=False)
+    db.session.add(initial_status)
+    db.session.commit()
 db = SQLAlchemy(app)
 Session(app)
 
@@ -196,14 +196,14 @@ if __name__ == '__main__':
                 db.session.commit()
 
             # Create initial admin account
-            admin_user = User(username='admin', password='password', approved=True)
-            try:
-                db.session.add(admin_user)
-                db.session.commit()
-                print("Admin account created.")
-            except IntegrityError:
-                db.session.rollback()
-                print("Admin account already exists.")
+                admin_user = User(username='admin', password='password', approved=True)
+                try:
+                    db.session.add(admin_user)
+                    db.session.commit()
+                    print("Admin account created.")
+                except IntegrityError:
+                    db.session.rollback()
+                    print("Admin account already exists.")
 
         print("Database setup complete.")
         exit(0)  # Exit the script
