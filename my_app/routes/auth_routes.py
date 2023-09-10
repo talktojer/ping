@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash, session, redirect, render_template_string
+from flask import Blueprint, request, flash, session, redirect, render_template_string, current_app
 from datetime import datetime
 from my_app.models import User
 from my_app import db  # Import db from my_app
@@ -50,7 +50,7 @@ def register():
         username = request.form['username'].lower()
         password = request.form['password']
         # Check the new_users_approvals variable to set the approved attribute
-        approved_status = True if new_users_approvals == 0 else False
+        approved_status = True if current_app.config['NEW_USERS_APPROVALS'] == 0 else False
         new_user = User(username=username, password=password, approved=approved_status)
         try:
             db.session.add(new_user)
