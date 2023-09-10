@@ -53,7 +53,7 @@ def add_user():
         return redirect('/login')
 
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].lower()
         password = request.form['password']
 
         try:
@@ -72,7 +72,7 @@ from flask import flash
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].lower()
         password = request.form['password']
         user = User.query.filter_by(username=username, password=password).first()
         if user:
@@ -167,7 +167,7 @@ def admin():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].lower()
         password = request.form['password']
         # Check the new_users_approvals variable to set the approved attribute
         approved_status = True if new_users_approvals == 0 else False
