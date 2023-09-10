@@ -17,10 +17,12 @@
 </body>
 <footer>
     {% if username %}
-        <p>Logged in as: {{ username }}</p>
-        <a href="/logout">Logout</a>
-    {% else %}
-        <a href="/login">Login</a>
-    {% endif %}
+    <a href="/logout">Logout</a><BR>
+{% else %}
+    <a href="/login">Login</a><BR>
+{% endif %}
+{% if username == 'admin' %}
+<a href="/admin">Go to Admin Page</a><BR>
+{% endif %}
 </footer>
 </html>
