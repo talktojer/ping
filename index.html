@@ -2,7 +2,6 @@
 <html>
 <head><title>PING JERS PHONE</title></head>
 <body>
-    <p>Debug: {{ username }}</p>
     <div id="onlineElements" style="display:none;">
         {% if username %}
             <p>You are logged in as {{ username }}.</p>
@@ -15,9 +14,7 @@
     <p>System Status</p>
     <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
     
-    {% if username == 'admin' %}
-    <a href="/admin">Go to Admin Page</a>
-    {% endif %}
+
 
     <footer>
         {% if username %}
@@ -25,6 +22,9 @@
             <a href="/logout">Logout</a>
         {% else %}
             <a href="/login">Login</a>
+        {% endif %}
+        {% if username == 'admin' %}
+        <a href="/admin">Go to Admin Page</a>
         {% endif %}
     </footer>
 

@@ -109,7 +109,7 @@ def get_status():
 
 @app.route('/', methods=['GET'])
 def index():
-    print("Debug: ", session.get('username'))  # Debug print
+
     return render_template_string(open('index.html').read(), username=session.get('username'))
 
 
