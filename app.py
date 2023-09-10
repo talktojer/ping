@@ -38,14 +38,11 @@ class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     online = db.Column(db.Boolean, default=False)
 def get_active_users():
-    current_time = datetime.utcnow()
-    five_minutes_ago = current_time - timedelta(minutes=5)
+    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
     active_users = User.query.filter(User.last_active >= five_minutes_ago).all()
-    user_idle_times = {}
-    for user in active_users:
-        idle_time = (current_time - user.last_active).seconds
-        user_idle_times[user.username] = idle_time
-    return user_idle_times
+    print("Active users:", active_users)  # Debug line
+    return active_users
+
 
 logged_in_users = set()
 global_online_status = False
