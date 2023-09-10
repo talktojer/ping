@@ -12,7 +12,7 @@ WORKDIR /usr/app
 
 
 # Create the db directory
-RUN mkdir -p /usr/app/db
+RUN mkdir -p /usr/app/src/db
 RUN pip install flask
 RUN pip install flask-session
 RUN pip install requests
@@ -27,4 +27,4 @@ COPY . /usr/app/
 #CMD instruction should be used to run the software
 #contained by your image, along with any arguments.
 
-CMD [ "python", "app.py"]
+CMD [ "python", "run.py"]
