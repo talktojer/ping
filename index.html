@@ -14,11 +14,11 @@
     <p>System Status</p>
     <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
     
-    <div style="float:right;">
+    <div>
         <h3>Active Users</h3>
         <ul>
-            {% for user in active_users %}
-                <li>{{ user.username }}</li>
+            {% for username, idle_time in active_users_idle_times.items() %}
+                <li>{{ username }} <span style="font-size: smaller;">({{ idle_time }}s idle)</span></li>
             {% endfor %}
         </ul>
     </div>

@@ -38,8 +38,14 @@ class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     online = db.Column(db.Boolean, default=False)
 def get_active_users():
-    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
-    return User.query.filter(User.last_active >= five_minutes_ago).all()
+    current_time = datetime.utcnow()
+    five_minutes_ago = current_time - timedelta(minutes=5)
+    active_users = User.query.filter(User.last_active >= five_minutes_ago).all()
+    user_idle_times = {}
+    for user in active_users:
+        idle_time = (current_time - user.last_active).seconds
+        user_idle_times[user.username] = idle_time
+    return user_idle_times
 
 logged_in_users = set()
 global_online_status = False
@@ -127,8 +133,16 @@ def get_status():
 
 @app.route('/', methods=['GET'])
 def index():
+    username = session.get('username')
+    if username:
+        user = User.query.filter_by(username=username).first()
+        if user:
+            user.last_active = datetime.utcnow()
+            db.session.commit()
     active_users = get_active_users()
-    return render_template_string(open('index.html').read(), username=session.get('username'), active_users=active_users)
+    active_users_idle_times = {user.username: int((datetime.utcnow() - user.last_active).total_seconds()) for user in active_users}
+    return render_template_string(open('index.html').read(), username=username, active_users_idle_times=active_users_idle_times)
+
 
 
 
