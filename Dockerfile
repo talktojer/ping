@@ -18,6 +18,9 @@ RUN pip install requests
 RUN pip install flask_sqlalchemy
 #to COPY the remote file at working directory in container
 COPY app.py ./
+COPY run.py ./
+ADD templates .
+ADD app .
 COPY admin.html ./
 COPY index.html ./
 COPY register.html ./
