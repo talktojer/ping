@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 import requests
 
 auth_routes = Blueprint('auth_routes', __name__)
-
+new_users_approvals = current_app.config['NEW_USERS_APPROVALS']
 @auth_routes.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -50,7 +50,7 @@ def register():
         username = request.form['username'].lower()
         password = request.form['password']
         # Check the new_users_approvals variable to set the approved attribute
-        approved_status = True if current_app.config['NEW_USERS_APPROVALS'] == 0 else False
+        approved_status = True if new_users_approvals == 0 else False
         new_user = User(username=username, password=password, approved=approved_status)
         try:
             db.session.add(new_user)
