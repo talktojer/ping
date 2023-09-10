@@ -2,6 +2,15 @@
 <html>
 <head><title>PING JERS PHONE</title></head>
 <body>
+    <style>
+        #activeUsers {
+            float: right;
+        }
+        .idleTime {
+            font-size: 0.8em;
+        }
+    </style>    
+    <div id="mainContent">
     <div id="onlineElements" style="display:none;">
         {% if username %}
             <p>You are logged in as {{ username }}.</p>
@@ -13,12 +22,12 @@
 
     <p>System Status</p>
     <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
-    
-    <div>
+    </div>
+    <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
         <ul>
-            {% for username, idle_time in active_users_idle_times.items() %}
-                <li>{{ username }} <span style="font-size: smaller;">({{ idle_time }}s idle)</span></li>
+            {% for user, idle_time in active_users_idle_times.items() %}
+                <li>{{ user }} <span class="idleTime">({{ idle_time }}s)</span></li>
             {% endfor %}
         </ul>
     </div>
