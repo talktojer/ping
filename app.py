@@ -68,10 +68,10 @@ def login():
                 flash('Login successful', 'success')
                 return redirect('/')
             else:
-                return "Your account is pending approval."
+                return "Your account is pending approval. <a href='/'>Back to Main Page</a>"
         else:
-            return "Invalid credentials, <a href='/login'>try again</a> or <a href='/admin/add_user'>register</a>."
-    return render_template_string(open('login.html').read())
+            return "Invalid credentials, <a href='/login'>try again</a> or <a href='/register'>register</a>. <a href='/'>Back to Main Page</a>"
+    return render_template_string(open('login.html').read() + "<a href='/'>Back to Main Page</a>")
 
 
 
