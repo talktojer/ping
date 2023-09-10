@@ -4,6 +4,8 @@ from my_app.models import User
 from my_app import db  # Import db from my_app
 from sqlalchemy.exc import IntegrityError
 import requests
+from my_app.models import SystemStatus
+
 
 admin_routes = Blueprint('admin_routes', __name__)
 
