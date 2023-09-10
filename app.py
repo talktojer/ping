@@ -12,11 +12,13 @@ from datetime import datetime, timedelta
 
 
 # Initialize Flask app
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////usr/app/src/db/users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = 'supersecretkey'
-
+#SET THIS TO 1 to enable approvals
+new_users_approvals = 0
 # Initialize SQLAlchemy with app
 db = SQLAlchemy(app)
 
@@ -156,7 +158,9 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        new_user = User(username=username, password=password, approved=False)
+        # Check the new_users_approvals variable to set the approved attribute
+        approved_status = True if new_users_approvals == 0 else False
+        new_user = User(username=username, password=password, approved=approved_status)
         try:
             db.session.add(new_user)
             db.session.commit()
@@ -166,10 +170,11 @@ def register():
             response = requests.post('http://ntfy.jersweb.net/ping-jer', data=payload)
             response.raise_for_status()
 
-            return "Registration successful. Waiting for admin approval. <a href='/'>Back to Main Page</a>"
+            return "Registration successful. Waiting for admin approval. <a href='/'>Back to Main Page</a>" if not approved_status else "Registration successful. <a href='/'>Back to Main Page</a>"
         except IntegrityError:
             db.session.rollback()
             return "Username already exists. <a href='/'>Back to Main Page</a>"
+
     return render_template_string(open('register.html').read() + "<a href='/'>Back to Main Page</a>")
 
 
