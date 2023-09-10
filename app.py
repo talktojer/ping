@@ -7,6 +7,11 @@ from sqlalchemy.exc import IntegrityError
 from flask import flash
 import argparse
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run the Flask app.')
     parser.add_argument('--setup', action='store_true', help='Set up database.')
