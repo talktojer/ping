@@ -19,12 +19,12 @@
     <footer>
         {% if username %}
             <p>Logged in as: {{ username }}</p>
-            <a href="/logout">Logout</a>
+            <a href="/logout">Logout</a><BR>
         {% else %}
-            <a href="/login">Login</a>
+            <a href="/login">Login</a><BR>
         {% endif %}
         {% if username == 'admin' %}
-        <a href="/admin">Go to Admin Page</a>
+        <a href="/admin">Go to Admin Page</a><BR>
         {% endif %}
         <small>
             I wrote this just to experiment with the ntfy app, and Cloudflare tunnels, and to practice a little with Python.<br>
