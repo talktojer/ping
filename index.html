@@ -22,6 +22,10 @@
     {% else %}
         <a href="/login">Login</a>
     {% endif %}
+    {% if username == 'admin' %}
+    <a href="/admin">Go to Admin Page</a>
+    {% endif %}
+
 </footer>
 
 <script>
