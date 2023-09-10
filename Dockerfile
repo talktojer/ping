@@ -8,7 +8,7 @@ FROM python:latest
 
 # Any working directory can be chosen as per choice like '/' or '/home' etc
 # i have chosen /usr/app/src
-WORKDIR /usr/app/src
+WORKDIR /usr/app
 # Create the db directory
 RUN mkdir -p /usr/app/src/db
 RUN pip install flask
