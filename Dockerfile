@@ -8,7 +8,8 @@ FROM python:latest
 
 # Any working directory can be chosen as per choice like '/' or '/home' etc
 # i have chosen /usr/app/src
-COPY . /usr/app/
+WORKDIR /usr/app
+
 
 # Create the db directory
 RUN mkdir -p /usr/app/db
