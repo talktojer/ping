@@ -3,7 +3,7 @@ from flask import flash
 
 auth_routes = Blueprint('auth_routes', __name__)
 
-@app.route('/login', methods=['GET', 'POST'])
+@auth_routes.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username'].lower()
@@ -26,7 +26,7 @@ def login():
 
 
 
-@app.route('/logout', methods=['GET'])
+@auth_routes.route('/logout', methods=['GET'])
 def logout():
     username = session.pop('username', None)
     user = User.query.filter_by(username=username).first()
@@ -39,7 +39,7 @@ def logout():
         logged_in_users.discard(username)  # Remove username from set
     return redirect('/')
     
-@app.route('/logout', methods=['GET'])
+@auth_routes.route('/logout', methods=['GET'])
 def logout():
     username = session.pop('username', None)
     user = User.query.filter_by(username=username).first()

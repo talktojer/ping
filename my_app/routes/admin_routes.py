@@ -3,7 +3,7 @@ from flask import Blueprint
 admin_routes = Blueprint('admin_routes', __name__)
 
 
-@app.route('/admin', methods=['GET'])
+@admin_routes.route('/admin', methods=['GET'])
 def admin():
     if not session.get('logged_in') or session.get('username') != 'admin':
         return redirect('/login')
@@ -11,7 +11,7 @@ def admin():
     return render_template_string(open('admin.html').read(), pending_users=pending_users)
     
 
-@app.route('/admin/add_user', methods=['GET', 'POST'])
+@admin_routes.route('/admin/add_user', methods=['GET', 'POST'])
 def add_user():
     if not session.get('logged_in'):
         return redirect('/login')
@@ -31,7 +31,7 @@ def add_user():
 
     return render_template_string(open('add_user.html').read())
 
-@app.route('/admin/toggle', methods=['GET'])
+@admin_routes.route('/admin/toggle', methods=['GET'])
 def toggle_online():
     if not session.get('logged_in'):
         return redirect('/login')
