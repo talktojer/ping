@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from my_app import db
 from my_app.models import User
 import requests
-
+from my_app.models import SystemStatus
 
 general_routes = Blueprint('general_routes', __name__)
 def get_active_users():
@@ -11,7 +11,7 @@ def get_active_users():
     active_users = User.query.filter(User.last_active >= five_minutes_ago).all()
     print("Active users:", active_users)  # Debug line
     return active_users
-    
+
 @general_routes.route('/', methods=['GET'])
 def index():
     username = session.get('username')
@@ -44,3 +44,8 @@ def ping():
         logging.error(f"Error in /ping: {e}")
         return jsonify({"error": str(e)}), 500
     pass
+
+@general_routes.route('/status', methods=['GET'])
+def get_status():
+    status = SystemStatus.query.first()
+    return jsonify({"online": status.online}), 200
