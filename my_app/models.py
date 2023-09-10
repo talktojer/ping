@@ -1,5 +1,5 @@
 from my_app import db  # Import db from my_app
-
+from datetime import datetime
 
 # Define models
 class User(db.Model):
@@ -13,3 +13,9 @@ class User(db.Model):
 class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     online = db.Column(db.Boolean, default=False)
+
+class ChatMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    message = db.Column(db.String(500), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)    
