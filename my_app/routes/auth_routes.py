@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, session, redirect, render_template_string
 from datetime import datetime
-from ..models import User  # Replace 'your_project' with the actual name of your project
-import db  # Replace 'your_project' with the actual name of your project
+from my_app.models import User
+from my_app import db  # Import db from my_app
 from sqlalchemy.exc import IntegrityError
 import requests
 
