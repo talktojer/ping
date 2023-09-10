@@ -170,10 +170,18 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.setup:
-        print("Setting up database...")
-        with app.app_context():
+        db_path = "/usr/app/src/db/users.db"  # Adjust this path as needed
+
+        # Delete the existing database file if it exists
+        if os.path.exists(db_path):
+            os.remove(db_path)
+            print("Old database file deleted.")
+
+        # Create a new database
+        with app.app_context():  # Push an application context
             db.create_all()
-            
+
+            # Create initial admin account
             admin_user = User(username='admin', password='password', approved=True)
             try:
                 db.session.add(admin_user)
@@ -182,8 +190,8 @@ if __name__ == '__main__':
             except IntegrityError:
                 db.session.rollback()
                 print("Admin account already exists.")
-        
+
         print("Database setup complete.")
-        exit(0)
+        exit(0)  # Exit the script
     else:
         app.run(host='0.0.0.0', port=8092)
