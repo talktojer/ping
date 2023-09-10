@@ -43,19 +43,6 @@ def logout():
         logged_in_users.discard(username)  # Remove username from set
     return redirect('/')
     
-@auth_routes.route('/logout', methods=['GET'])
-def logout():
-    username = session.pop('username', None)
-    user = User.query.filter_by(username=username).first()
-    if user:
-        user.is_logged_in = False
-        db.session.commit()    
-    username = session.pop('username', None)
-    session.pop('logged_in', None)
-    if username:
-        logged_in_users.discard(username)  # Remove username from set
-    return redirect('/')
-
 
 @auth_routes.route('/register', methods=['GET', 'POST'])
 def register():
