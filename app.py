@@ -176,10 +176,11 @@ def register():
             db.session.add(new_user)
             db.session.commit()
 
-            # Send a ping after successful registration
-            payload = f'{username} just registered!'
-            response = requests.post('http://ntfy.jersweb.net/ping-jer', data=payload)
-            response.raise_for_status()
+            if new_users_approvals == 0:
+                # Send a ping after successful registration
+                payload = f'{username} just registered!'
+                response = requests.post('http://ntfy.jersweb.net/ping-jer', data=payload)
+                response.raise_for_status()
 
             return "Registration successful. Waiting for admin approval. <a href='/'>Back to Main Page</a>" if not approved_status else "Registration successful. <a href='/'>Back to Main Page</a>"
         except IntegrityError:
@@ -187,6 +188,7 @@ def register():
             return "Username already exists. <a href='/'>Back to Main Page</a>"
 
     return render_template_string(open('register.html').read() + "<a href='/'>Back to Main Page</a>")
+
 
 
 @app.route('/admin/approve/<int:user_id>', methods=['GET'])
