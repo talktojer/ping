@@ -145,12 +145,13 @@ def register():
             response = requests.post('http://ntfy.jersweb.net/ping-jer', data=payload)
             response.raise_for_status()
 
-            return "Registration successful. Waiting for admin approval."
+            return "Registration successful. Waiting for admin approval. <a href='/'>Back to Main Page</a>"
         except IntegrityError:
             db.session.rollback()
-            return "Username already exists."
-    return render_template_string(open('register.html').read())
-    
+            return "Username already exists. <a href='/'>Back to Main Page</a>"
+    return render_template_string(open('register.html').read() + "<a href='/'>Back to Main Page</a>")
+
+
 @app.route('/admin/approve/<int:user_id>', methods=['GET'])
 def approve_user(user_id):
     if not session.get('logged_in') or session.get('username') != 'admin':
