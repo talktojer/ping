@@ -36,3 +36,24 @@ ta => {
 </footer>
 </html>
 
+<button onclick="toggleStatus()">Toggle Online/Offline</button>
+<div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
+<script>
+    function toggleStatus() {
+        fetch('/admin/toggle')
+            .then(response => response.json())
+            .then(data => {
+                // Check if the fetch request was successful
+                if (data && data.status === "success") {
+                    // Toggle the online/offline status
+                    const statusLight = document.getElementById('statusLight');
+                    statusLight.style.backgroundColor = data.online ? 'green' : 'red';
+                } else {
+                    console.error("Toggle failed:", data); // Log the error if fetch fails
+                }
+            })
+            .catch(error => {
+                console.error("Toggle error:", error); // Log any fetch errors
+            });
+    }
+</script>
