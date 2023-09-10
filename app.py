@@ -6,6 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 import argparse
 import os
+from datetime import datetime, timedelta
+
+
+
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -26,10 +30,14 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     approved = db.Column(db.Boolean, default=False)
     is_logged_in = db.Column(db.Boolean, default=False)
+    last_active = db.Column(db.DateTime, nullable=True)
 
 class SystemStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     online = db.Column(db.Boolean, default=False)
+def get_active_users():
+    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
+    return User.query.filter(User.last_active >= five_minutes_ago).all()
 
 logged_in_users = set()
 global_online_status = False
@@ -63,7 +71,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username, password=password).first()
         if user:
-            user.is_logged_in = True
+            user.last_active = datetime.utcnow()
             db.session.commit()
             if user.username == 'admin' or user.approved:
                 session['logged_in'] = True
@@ -117,8 +125,9 @@ def get_status():
 
 @app.route('/', methods=['GET'])
 def index():
-    logged_in_users = User.query.filter_by(is_logged_in=True).all()
-    return render_template_string(open('index.html').read(), username=session.get('username'), logged_in_users=logged_in_users)
+    active_users = get_active_users()
+    return render_template_string(open('index.html').read(), username=session.get('username'), active_users=active_users)
+
 
 
 
@@ -178,6 +187,10 @@ def approve_user(user_id):
 @app.route('/ping', methods=['POST'])
 def ping():
     logging.info("Inside /ping")
+    user = User.query.filter_by(username=session.get('username')).first()
+    if user:
+        user.last_active = datetime.utcnow()
+        db.session.commit()
     try:
         data = request.get_json()
         # Use the logged-in username if available, otherwise default to 'Anon Pinger'
