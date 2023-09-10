@@ -1,7 +1,9 @@
-from flask import Blueprint, request, jsonify, render_template_string
-from datetime import datetime
+from flask import Blueprint, request, jsonify, render_template_string, session
+from datetime import datetime, timedelta
 from my_app import db
 from my_app.models import User
+import requests
+
 
 general_routes = Blueprint('general_routes', __name__)
 
