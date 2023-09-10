@@ -11,7 +11,7 @@ db_dir = 'db'
 if not os.path.exists(db_dir):
     os.makedirs(db_dir)
 logging.basicConfig(level=logging.INFO)
-
+db = SQLAlchemy(app)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////usr/app/src/db/users.db'
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -21,7 +21,7 @@ with app.app_context():
     initial_status = SystemStatus(online=False)
     db.session.add(initial_status)
     db.session.commit()
-db = SQLAlchemy(app)
+
 Session(app)
 
 class User(db.Model):
