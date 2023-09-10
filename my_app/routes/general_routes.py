@@ -4,6 +4,7 @@ from my_app import db
 from my_app.models import User
 import requests
 from my_app.models import SystemStatus
+import logging
 
 general_routes = Blueprint('general_routes', __name__)
 def get_active_users():
