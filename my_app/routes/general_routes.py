@@ -50,3 +50,23 @@ def ping():
 def get_status():
     status = SystemStatus.query.first()
     return jsonify({"online": status.online}), 200
+
+from my_app.models import ChatMessage
+
+@general_routes.route('/send_message', methods=['POST'])
+def send_message():
+    if not session.get('logged_in'):
+        return jsonify({"status": "failure", "reason": "not logged in"}), 401
+
+    message_text = request.form['message']
+    username = session['username']
+    new_message = ChatMessage(username=username, message=message_text)
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify({"status": "success"}), 200
+
+@general_routes.route('/get_messages', methods=['GET'])
+def get_messages():
+    all_messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
+    messages = [{"username": msg.username, "message": msg.message} for msg in all_messages]
+    return jsonify({"messages": messages}), 200

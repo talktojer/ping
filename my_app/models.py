@@ -18,4 +18,6 @@ class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(500), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)    
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    def __repr__(self):
+        return f'<ChatMessage {self.username}: {self.message}>'

@@ -9,20 +9,46 @@
         .idleTime {
             font-size: 0.8em;
         }
+        #chatBox {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 300px;
+            background-color: #f2f2f2;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0px -3px 10px rgba(0,0,0,0.2);
+        }
+        #messages {
+            max-height: 200px;
+            overflow-y: scroll;
+        }
     </style>    
     <div id="mainContent">
-    <div id="onlineElements" style="display:none;">
-        {% if username %}
-            <p>You are pinging Jer as: {{ username }}.</p>
-        {% else %}
-            <p>If you are not logged in, you will ping anonymously.</p>
-        {% endif %}
-        <button onclick="pingJer()" id="pingButton">Ping Jer!</button>
+        <div id="onlineElements" style="display:none;">
+            {% if username %}
+                <p>You are pinging Jer as: {{ username }}.</p>
+            {% else %}
+                <p>If you are not logged in, you will ping anonymously.</p>
+            {% endif %}
+            <button onclick="pingJer()" id="pingButton">Ping Jer!</button>
+        </div>
+
+        <p>System Status</p>
+        <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
     </div>
 
-    <p>System Status</p>
-    <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
+    <!-- Chatbox -->
+    {% if username %}
+    <div id="chatBox">
+        <div id="messages">
+            <!-- Placeholder for messages -->
+        </div>
+        <input type="text" id="chatInput" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
     </div>
+    {% endif %}
+
     <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
         <ul>
@@ -33,20 +59,7 @@
     </div>
 
     <footer>
-        {% if username %}
-            <a href="/logout">Logout</a><BR>
-        {% else %}
-            <a href="/login">Login</a><BR>
-        {% endif %}
-        {% if username == 'admin' %}
-        <a href="/admin">Go to Admin Page</a><BR>
-        {% endif %}
-        <small>
-            I wrote this just to experiment with the ntfy app, and Cloudflare tunnels, and to practice a little with Python.<br>
-            All it does is uses ntfy to send me a message to my phone saying
-someone "Pinged" me.
-            I don't even see your IP with this app.
-        </small>
+        <!-- Existing footer content -->
     </footer>
 
 <script>
@@ -82,7 +95,16 @@ someone "Pinged" me.
             }
         });
     }
+        function sendMessage() {
+            const message = document.getElementById("chatInput").value;
+            // Implement code to send this message to the server
+            console.log("Sending message: " + message);
+        }
 
+        function fetchMessages() {
+            // Implement code to fetch messages from the server
+            console.log("Fetching messages");
+        }
     document.addEventListener('DOMContentLoaded', (event) => {
         updateStatus();
     });
