@@ -55,12 +55,19 @@
         <div id="messages">
             <!-- Placeholder for messages -->
         </div>
-        <div id="inputContainer">  <!-- New container for input and button -->
+        <div id="inputContainer">
             <input type="text" id="chatInput" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
         </div>
+        {% if username == 'admin' %}
+        <button id="clearMessages" onclick="clearAllMessages()">Clear All Messages</button>
+        {% endif %}
+        <script>
+            fetchMessages();  // Fetch messages immediately when chat box is present
+        </script>
     </div>
     {% endif %}
+
 
     <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
@@ -135,11 +142,22 @@ someone "Pinged" me.
             body: JSON.stringify({ username: "{{ username }}", message: message })
         }).then(response => response.json()).then(data => {
             if (data.status === 'success') {
+                document.getElementById("chatInput").value = '';  // Clear the input box
                 fetchMessages();  // Fetch updated messages
             }
         });
     }
     
+    function clearAllMessages() {
+        fetch('/clear_messages', {
+            method: 'POST'
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                fetchMessages();  // Refresh the chat box
+            }
+        });
+    }
+        
     function fetchMessages() {
         fetch('/fetch_messages')
             .then(response => response.json())
