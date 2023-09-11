@@ -61,10 +61,19 @@
     <footer>
         {% if username %}
             <p>Logged in as: {{ username }}</p>
-            <a href="/logout">Logout</a>
+            <a href="/logout">Logout</a><BR>
         {% else %}
-            <a href="/login">Login</a>
+            <a href="/login">Login</a><BR>
         {% endif %}
+        {% if username == 'admin' %}
+        <a href="/admin">Go to Admin Page</a><BR>
+        {% endif %}
+        <small>
+            I wrote this just to experiment with the ntfy app, and Cloudflare tunnels, and to practice a little with Python.<br>
+            All it does is uses ntfy to send me a message to my phone saying
+someone "Pinged" me.
+            I don't even see your IP with this app.
+        </small>
     </footer>
 <script>
     function updateStatus() {
