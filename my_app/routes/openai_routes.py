@@ -4,11 +4,11 @@ import re
 import os
 
 openai_routes = Blueprint('openai_routes', __name__)
-openai.api_key_path = "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"
+OPENAPI_KEY = "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"
 
 def get_completion(messages):
     headers = {
-        "Authorization": f"Bearer {openai.api_key_path}"
+        "Authorization": f"Bearer {OPENAPI_KEY}"
     }
     
     response = openai.ChatCompletion.create(
