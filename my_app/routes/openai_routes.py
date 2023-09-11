@@ -4,7 +4,7 @@ import re
 import os
 
 openai_routes = Blueprint('openai_routes', __name__)
-openai.api_key_path = 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
+openai.api_key_path = "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"
 
 def get_completion(messages):
     headers = {
