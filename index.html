@@ -116,21 +116,36 @@ someone "Pinged" me.
 
     function sendMessage() {
         const message = document.getElementById("chatInput").value;
-        if (message.trim() === '') return;  // Ignore empty messages
+        if (message.trim() === '') return;
     
-        // Add message to local array (for demonstration)
-        messagesArray.push({username: "{{ username }}", message: message});
-    
-        // Clear the input box
-        document.getElementById("chatInput").value = '';
-    
-        // Update the chat box
-        updateChatBox();
-    
-        // TODO: Implement code to send this message to the server
-        console.log("Sending message: " + message);
+        fetch('/send_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: "{{ username }}", message: message })
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                fetchMessages();  // Fetch updated messages
+            }
+        });
     }
     
+    function fetchMessages() {
+        fetch('/fetch_messages')
+            .then(response => response.json())
+            .then(data => {
+                const messagesDiv = document.getElementById("messages");
+                messagesDiv.innerHTML = '';
+    
+                data.forEach(msg => {
+                    messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+                });
+    
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+    }
+        
     function updateChatBox() {
         const messagesDiv = document.getElementById("messages");
         messagesDiv.innerHTML = '';  // Clear existing messages
@@ -146,7 +161,9 @@ someone "Pinged" me.
     
     document.addEventListener('DOMContentLoaded', (event) => {
         updateStatus();
+        fetchMessages();  // Initial fetch
     });
+    
 </script>
 </body>
 </html>

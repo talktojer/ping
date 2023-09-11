@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from my_app import db
 from my_app.models import User
 import requests
-from my_app.models import SystemStatus
+from my_app.models import SystemStatus, ChatMessages
 import logging
 
 general_routes = Blueprint('general_routes', __name__)
@@ -57,18 +57,24 @@ from my_app.models import ChatMessage
 
 @general_routes.route('/send_message', methods=['POST'])
 def send_message():
-    if not session.get('logged_in'):
-        return jsonify({"status": "failure", "reason": "not logged in"}), 401
+    data = request.json
+    username = data.get('username')
+    message = data.get('message')
 
-    message_text = request.form['message']
-    username = session['username']
-    new_message = ChatMessage(username=username, message=message_text)
+    new_message = ChatMessage(username=username, message=message)
     db.session.add(new_message)
     db.session.commit()
-    return jsonify({"status": "success"}), 200
+
+    return jsonify({'status': 'success'})
 
 @general_routes.route('/get_messages', methods=['GET'])
 def get_messages():
     all_messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
     messages = [{"username": msg.username, "message": msg.message} for msg in all_messages]
     return jsonify({"messages": messages}), 200
+
+@general_routes.route('/fetch_messages', methods=['GET'])
+def fetch_messages():
+    messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
+    messages_list = [{'username': msg.username, 'message': msg.message} for msg in messages]
+    return jsonify(messages_list)
