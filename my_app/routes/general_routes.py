@@ -26,6 +26,8 @@ def index():
     return render_template_string(open('index.html').read(), username=username, active_users_idle_times=active_users_idle_times)
     pass
 
+
+
 @general_routes.route('/ping', methods=['POST'])
 def ping():
     logging.info("Inside /ping")
