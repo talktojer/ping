@@ -100,9 +100,13 @@ someone "Pinged" me.
         fetch('/status')
             .then(response => response.json())
             .then(data => {
+                console.log("Status data received:", data);  // Debug line
                 let displayValue = data.online ? 'block' : 'none';
                 document.getElementById('onlineElements').style.display = displayValue;
                 document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
+            })
+            .catch(error => {
+                console.error("Error fetching status:", error);  // Debug line
             });
     }
 
