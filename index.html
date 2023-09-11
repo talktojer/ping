@@ -192,6 +192,16 @@ someone "Pinged" me.
             sendMessage();  // Send the message
         }
     });
+    document.addEventListener('DOMContentLoaded', (event) => {
+        updateStatus();
+        
+        // Check if the user is logged in
+        if ("{{ username }}".length > 0) {
+            fetchMessages();  // Initial fetch
+        }
+    
+        // ...existing code for "Enter" key event listener...
+    });
     
 </script>
 </body>
