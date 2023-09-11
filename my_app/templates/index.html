@@ -15,12 +15,14 @@
             left: 50%;
             transform: translate(-50%, 0);
             width: 300px;
+            height: 200px;
             background-color: #f2f2f2;
             border-radius: 10px 10px 0 0;
             box-shadow: 0px -3px 10px rgba(0,0,0,0.2);
         }
         #messages {
             max-height: 200px;
+            height: 200px;
             overflow-y: scroll;
         }
     </style>    
@@ -59,9 +61,22 @@
     </div>
 
     <footer>
-        <!-- Existing footer content -->
+        {% if username %}
+            <p>Logged in as: {{ username }}</p>
+            <a href="/logout">Logout</a><BR>
+        {% else %}
+            <a href="/login">Login</a><BR>
+        {% endif %}
+        {% if username == 'admin' %}
+        <a href="/admin">Go to Admin Page</a><BR>
+        {% endif %}
+        <small>
+            I wrote this just to experiment with the ntfy app, and Cloudflare tunnels, and to practice a little with Python.<br>
+            All it does is uses ntfy to send me a message to my phone saying
+someone "Pinged" me.
+            I don't even see your IP with this app.
+        </small>
     </footer>
-
 <script>
     function updateStatus() {
         fetch('/status')
