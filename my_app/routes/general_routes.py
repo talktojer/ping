@@ -7,8 +7,12 @@ from my_app.models import SystemStatus, ChatMessage
 import logging
 import re
 from my_app.routes.openai_routes import get_completion
+import os
+
+
 
 general_routes = Blueprint('general_routes', __name__)
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 def detect_bot_mention(message):
     return bool(re.search(r"@bot", message))
 def fetch_last_n_messages(n=6):
