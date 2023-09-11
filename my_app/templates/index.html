@@ -13,6 +13,8 @@
             position: fixed;
             bottom: 50%;  /* Updated */
             left: 50%;
+            display: flex;
+            flex-direction: column;
             transform: translate(-50%, 50%);  /* Updated */
             width: 300px;
             height: 300px;  /* Updated */
@@ -23,10 +25,15 @@
         #messages {
             height: 200px;  /* Updated */
             overflow-y: scroll;
+            flex-grow: 1; 
         }
         #chatInput {
             width: 100%;  /* New */
         }
+        #inputContainer {
+            display: flex;  /* New */
+            justify-content: space-between;  /* New */
+        }        
     </style>    
     <div id="mainContent">
         <p>System Status</p>
@@ -48,10 +55,19 @@
         <div id="messages">
             <!-- Placeholder for messages -->
         </div>
-        <input type="text" id="chatInput" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+        <div id="inputContainer">
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        {% if username == 'admin' %}
+        <button id="clearMessages" onclick="clearAllMessages()">Clear All Messages</button>
+        {% endif %}
+        <script>
+            fetchMessages();  // Fetch messages immediately when chat box is present
+        </script>
     </div>
     {% endif %}
+
 
     <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
@@ -84,10 +100,12 @@ someone "Pinged" me.
         fetch('/status')
             .then(response => response.json())
             .then(data => {
+                console.log("Received data from /status:", data); 
                 let displayValue = data.online ? 'block' : 'none';
                 document.getElementById('onlineElements').style.display = displayValue;
                 document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
-            });
+            })
+            .catch(error => console.error("Error fetching /status:", error));  // Debug line
     }
 
     function pingJer() {
@@ -112,20 +130,95 @@ someone "Pinged" me.
             }
         });
     }
-        function sendMessage() {
-            const message = document.getElementById("chatInput").value;
-            // Implement code to send this message to the server
-            console.log("Sending message: " + message);
-        }
+    let messagesArray = [];
 
-        function fetchMessages() {
-            // Implement code to fetch messages from the server
-            console.log("Fetching messages");
+    function sendMessage() {
+        const message = document.getElementById("chatInput").value;
+        if (message.trim() === '') return;
+    
+        fetch('/send_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: "{{ username }}", message: message })
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                document.getElementById("chatInput").value = '';  // Clear the input box
+                fetchMessages();  // Fetch updated messages
+            }
+        });
+    }
+    
+    function clearAllMessages() {
+        fetch('/clear_messages', {
+            method: 'POST'
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                fetchMessages();  // Refresh the chat box
+            }
+        });
+    }
+        
+    function fetchMessages() {
+        fetch('/fetch_messages')
+            .then(response => response.json())
+            .then(data => {
+                const messagesDiv = document.getElementById("messages");
+                messagesDiv.innerHTML = '';
+    
+                data.forEach(msg => {
+                    messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+                });
+    
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+    }
+        
+    function updateChatBox() {
+        const messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML = '';  // Clear existing messages
+    
+        // Populate with updated messages
+        messagesArray.forEach(msg => {
+            messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+        });
+    
+        // Scroll to the bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    document.getElementById("chatInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();  // Prevent default "Enter" behavior
+            sendMessage();  // Send the message
         }
+    });
     
     document.addEventListener('DOMContentLoaded', (event) => {
+        console.log("Document loaded");  // Debug line
         updateStatus();
+        
+        // Check if the user is logged in
+        if ("{{ username }}".length > 0) {
+            fetchMessages();  // Initial fetch
+        }
+    
+        const chatInput = document.getElementById("chatInput");
+        if (chatInput) {
+            chatInput.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();  // Prevent default "Enter" behavior
+                    sendMessage();  // Send the message
+                }
+            });
+        } else {
+            console.error("Element with ID 'chatInput' not found.");
+        }
     });
+    
+    
+
 </script>
 </body>
 </html>
