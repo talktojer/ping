@@ -18,6 +18,8 @@ RUN pip install flask-session
 RUN pip install requests
 #RUN pip install logging
 RUN pip install flask_sqlalchemy
+run pip install openai
+run pip install re
 #to COPY the remote file at working directory in container
 COPY . /usr/app/
 
