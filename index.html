@@ -112,16 +112,37 @@ someone "Pinged" me.
             }
         });
     }
-        function sendMessage() {
-            const message = document.getElementById("chatInput").value;
-            // Implement code to send this message to the server
-            console.log("Sending message: " + message);
-        }
+    let messagesArray = [];
 
-        function fetchMessages() {
-            // Implement code to fetch messages from the server
-            console.log("Fetching messages");
-        }
+    function sendMessage() {
+        const message = document.getElementById("chatInput").value;
+        if (message.trim() === '') return;  // Ignore empty messages
+    
+        // Add message to local array (for demonstration)
+        messagesArray.push({username: "{{ username }}", message: message});
+    
+        // Clear the input box
+        document.getElementById("chatInput").value = '';
+    
+        // Update the chat box
+        updateChatBox();
+    
+        // TODO: Implement code to send this message to the server
+        console.log("Sending message: " + message);
+    }
+    
+    function updateChatBox() {
+        const messagesDiv = document.getElementById("messages");
+        messagesDiv.innerHTML = '';  // Clear existing messages
+    
+        // Populate with updated messages
+        messagesArray.forEach(msg => {
+            messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+        });
+    
+        // Scroll to the bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
     
     document.addEventListener('DOMContentLoaded', (event) => {
         updateStatus();
