@@ -19,6 +19,7 @@ RUN pip install requests
 #RUN pip install logging
 RUN pip install flask_sqlalchemy
 run pip install openai
+run pip install python-dotenv
 #to COPY the remote file at working directory in container
 COPY . /usr/app/
 COPY .env /usr/app/
