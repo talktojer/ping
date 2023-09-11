@@ -13,7 +13,6 @@ def get_completion(messages):
         temperature=0.7,
         n=1,
         max_tokens=500,
-        headers=headers  # Include headers for authentication
     )
     
     return response.choices[0].message.content
