@@ -4,13 +4,9 @@ import re
 import os
 
 openai_routes = Blueprint('openai_routes', __name__)
-openai.api_key_path = "/usr/app/openai.key"
+
 
 def get_completion(messages):
-    headers = {
-        "Authorization": f"Bearer {openai.api_key_path}"
-    }
-    
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',
         messages=messages,
