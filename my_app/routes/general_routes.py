@@ -78,3 +78,9 @@ def fetch_messages():
     messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
     messages_list = [{'username': msg.username, 'message': msg.message} for msg in messages]
     return jsonify(messages_list)
+
+@general_routes.route('/clear_messages', methods=['POST'])
+def clear_messages():
+    ChatMessage.query.delete()
+    db.session.commit()
+    return jsonify({'status': 'success'})
