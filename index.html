@@ -13,6 +13,8 @@
             position: fixed;
             bottom: 50%;  /* Updated */
             left: 50%;
+            display: flex;
+            flex-direction: column;
             transform: translate(-50%, 50%);  /* Updated */
             width: 300px;
             height: 300px;  /* Updated */
@@ -23,10 +25,15 @@
         #messages {
             height: 200px;  /* Updated */
             overflow-y: scroll;
+            flex-grow: 1; 
         }
         #chatInput {
             width: 100%;  /* New */
         }
+        #inputContainer {
+            display: flex;  /* New */
+            justify-content: space-between;  /* New */
+        }        
     </style>    
     <div id="mainContent">
         <div id="onlineElements" style="display:none;">
@@ -48,8 +55,10 @@
         <div id="messages">
             <!-- Placeholder for messages -->
         </div>
-        <input type="text" id="chatInput" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+        <div id="inputContainer">  <!-- New container for input and button -->
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
     {% endif %}
 
@@ -159,9 +168,11 @@ someone "Pinged" me.
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
     
-    document.addEventListener('DOMContentLoaded', (event) => {
-        updateStatus();
-        fetchMessages();  // Initial fetch
+    document.getElementById("chatInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();  // Prevent default "Enter" behavior
+            sendMessage();  // Send the message
+        }
     });
     
 </script>
