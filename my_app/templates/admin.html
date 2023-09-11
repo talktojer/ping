@@ -26,13 +26,31 @@ ta => {
     </body>
 <footer>
     {% if username %}
-    <a href="/logout">Logout</a><BR>
-{% else %}
-    <a href="/login">Login</a><BR>
-{% endif %}
-{% if username == 'admin' %}
-<a href="/admin">Go to Admin Page</a><BR>
-{% endif %}
+        <p>Logged in as: {{ username }}</p>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <a href="/login">Login</a>
+    {% endif %}
 </footer>
 </html>
 
+<script>
+    function toggleStatus() {
+        fetch('/admin/toggle')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Log the returned data
+                document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
+            })
+            .catch(error => console.error('Fetch Error:', error));
+    }
+
+    // Set initial state when the page loads
+    document.addEventListener('DOMContentLoaded', (event) => {
+        fetch('/status')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
+            });
+    });
+</script>
