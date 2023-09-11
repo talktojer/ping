@@ -4,8 +4,23 @@ import re
 import os
 
 openai_routes = Blueprint('openai_routes', __name__)
-#OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
+def get_completion(messages):
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}"
+    }
+    
+    response = openai.ChatCompletion.create(
+        model='gpt-3.5-turbo',
+        messages=messages,
+        temperature=0.7,
+        n=1,
+        max_tokens=500,
+        headers=headers  # Include headers for authentication
+    )
+    
+    return response.choices[0].message.content
 
 @openai_routes.route('/get_completion', methods=['POST'])
 def get_completion_route():
