@@ -59,9 +59,13 @@
     </div>
 
     <footer>
-        <!-- Existing footer content -->
+        {% if username %}
+            <p>Logged in as: {{ username }}</p>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
     </footer>
-
 <script>
     function updateStatus() {
         fetch('/status')
