@@ -8,7 +8,7 @@ openai.api_key_path = openai.key
 
 def get_completion(messages):
     headers = {
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer {openai.api_key_path}"
     }
     
     response = openai.ChatCompletion.create(
