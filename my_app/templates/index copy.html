@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head><title>PPPING JERS PHONE</title></head>
+<body>
+    <style>
+        #activeUsers {
+            float: right;
+        }
+        .idleTime {
+            font-size: 0.8em;
+        }
+        #chatBox {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 300px;
+            background-color: #f2f2f2;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0px -3px 10px rgba(0,0,0,0.2);
+        }
+        #messages {
+            max-height: 200px;
+            overflow-y: scroll;
+        }
+    </style>    
+    <div id="mainContent">
+        <div id="onlineElements" style="display:none;">
+            {% if username %}
+                <p>You are pinging Jer as: {{ username }}.</p>
+            {% else %}
+                <p>If you are not logged in, you will ping anonymously.</p>
+            {% endif %}
+            <button onclick="pingJer()" id="pingButton">Ping Jer!</button>
+        </div>
+
+        <p>System Status</p>
+        <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
+    </div>
+
+    <!-- Chatbox -->
+    {% if username %}
+    <div id="chatBox">
+        <div id="messages">
+            <!-- Placeholder for messages -->
+        </div>
+        <input type="text" id="chatInput" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    {% endif %}
+
+    <div id="activeUsers" style="float: right;">
+        <h3>Active Users</h3>
+        <ul>
+            {% for user, idle_time in active_users_idle_times.items() %}
+                <li>{{ user }} <span class="idleTime">({{ idle_time }}s)</span></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <footer>
+        <!-- Existing footer content -->
+    </footer>
+
+<script>
+    function updateStatus() {
+        fetch('/status')
+            .then(response => response.json())
+            .then(data => {
+                let displayValue = data.online ? 'block' : 'none';
+                document.getElementById('onlineElements').style.display = displayValue;
+                document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
+            });
+    }
+
+    function pingJer() {
+        let name;
+        {% if username %}
+            name = "{{ username }}";
+        {% else %}
+            name = "Anon Pinger";
+        {% endif %}
+
+        fetch('/ping', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: name })
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                alert('Ping Successful');
+            } else {
+                alert('Ping Failed');
+            }
+        });
+    }
+        function sendMessage() {
+            const message = document.getElementById("chatInput").value;
+            // Implement code to send this message to the server
+            console.log("Sending message: " + message);
+        }
+
+        function fetchMessages() {
+            // Implement code to fetch messages from the server
+            console.log("Fetching messages");
+        }
+    
+    document.addEventListener('DOMContentLoaded', (event) => {
+        updateStatus();
+    });
+</script>
+</body>
+</html>
+
