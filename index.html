@@ -97,6 +97,7 @@ someone "Pinged" me.
     </footer>
 <script>
     function updateStatus() {
+        console.log("updateStatus called"); 
         fetch('/status')
             .then(response => response.json())
             .then(data => {
