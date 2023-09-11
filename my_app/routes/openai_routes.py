@@ -4,7 +4,7 @@ import re
 import os
 
 openai_routes = Blueprint('openai_routes', __name__)
-OPENAI_API_KEY = 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
+OPENAI_API_KEY = "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"
 def get_completion(messages):
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',
