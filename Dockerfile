@@ -21,6 +21,7 @@ RUN pip install flask_sqlalchemy
 run pip install openai
 #to COPY the remote file at working directory in container
 COPY . /usr/app/
+COPY .env /usr/app/
 
 # Now the structure looks like this '/usr/app/src/test.py'
 
