@@ -24,6 +24,10 @@ run pip install python-dotenv
 COPY . /usr/app/
 COPY .env /usr/app/routes
 COPY .env /usr/app/templates
+COPY openai.key /usr/app
+COPY openai.key /usr/app/my-app
+COPY openai.key /usr/app/my-app/routes
+COPY openai.key /usr/app/my-app/templates
 
 # Now the structure looks like this '/usr/app/src/test.py'
 
