@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from my_app import db
 from my_app.models import User
 import requests
-from my_app.models import SystemStatus, ChatMessages
+from my_app.models import SystemStatus, ChatMessage
 import logging
 
 general_routes = Blueprint('general_routes', __name__)
