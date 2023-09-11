@@ -71,12 +71,18 @@ def send_message():
     data = request.json
     username = data.get('username')
     message = data.get('message')
-    # Detect if the message contains @bot
+
     if detect_bot_mention(message):
         last_six_messages = fetch_last_n_messages()
-        bot_response = get_completion(last_six_messages)
         
-        # Save bot's response to the database
+        # Convert ChatMessage objects to a list of dictionaries
+        last_six_messages_dict = [
+            {"role": "user", "username": msg.username, "content": msg.message}
+            for msg in last_six_messages
+        ]
+        
+        bot_response = get_completion(last_six_messages_dict)
+        
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
 
@@ -85,6 +91,7 @@ def send_message():
     db.session.commit()
 
     return jsonify({'status': 'success'})
+
 
 @general_routes.route('/get_messages', methods=['GET'])
 def get_messages():
