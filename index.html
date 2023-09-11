@@ -194,11 +194,10 @@ someone "Pinged" me.
             sendMessage();  // Send the message
         }
     });
+    
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("Document loaded");  // Debug line
         updateStatus();
-        // ... rest of the code
-    });
         
         // Check if the user is logged in
         if ("{{ username }}".length > 0) {
@@ -208,6 +207,7 @@ someone "Pinged" me.
         // ...existing code for "Enter" key event listener...
     });
     
+
 </script>
 </body>
 </html>
