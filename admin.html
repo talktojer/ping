@@ -1,24 +1,19 @@
 <html>
     <head><title>Admin</title></head>
     <body>
-       <a href="/">Back to Main Page</a> <!-- The link to go back to the main pa
-ge -->
+       <a href="/">Back to Main Page</a> <!-- The link to go back to the main page -->
         <h1>Admin Page</h1>
         <h2>Pending Approvals</h2>
 <ul>
     {% for user in pending_users %}
-        <li>{{ user.username }} <a href="/admin/approve/{{ user.id }}">Approve</
-a></li>
+        <li>{{ user.username }} <a href="/admin/approve/{{ user.id }}">Approve</a></li>
     {% endfor %}
         <button onclick="toggleStatus()">Toggle Online/Offline</button>
-        <div id="statusLight" style="width: 20px; height: 20px; border-radius: 5
-0%; display: inline-block;"></div>
+        <div id="statusLight" style="width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></div>
         <script>
             function toggleStatus() {
-                fetch('/admin/toggle').then(response => response.json()).then(da
-ta => {
-                    document.getElementById('statusLight').style.backgroundColor
- = data.online ? 'green' : 'red';
+                fetch('/admin/toggle').then(response => response.json()).then(data => {
+                    document.getElementById('statusLight').style.backgroundColor = data.online ? 'green' : 'red';
                 });
             }
         </script>
