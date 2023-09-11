@@ -11,19 +11,21 @@
         }
         #chatBox {
             position: fixed;
-            bottom: 0;
+            bottom: 50%;  /* Updated */
             left: 50%;
-            transform: translate(-50%, 0);
+            transform: translate(-50%, 50%);  /* Updated */
             width: 300px;
-            height: 200px;
+            height: 300px;  /* Updated */
             background-color: #f2f2f2;
             border-radius: 10px 10px 0 0;
             box-shadow: 0px -3px 10px rgba(0,0,0,0.2);
         }
         #messages {
-            max-height: 200px;
-            height: 200px;
+            height: 200px;  /* Updated */
             overflow-y: scroll;
+        }
+        #chatInput {
+            width: 100%;  /* New */
         }
     </style>    
     <div id="mainContent">
