@@ -127,3 +127,8 @@ def clear_messages():
     ChatMessage.query.delete()
     db.session.commit()
     return jsonify({'status': 'success'})
+
+@general_routes.route('/status', methods=['GET'])
+def get_status():
+    status = SystemStatus.query.first()
+    return jsonify({"online": status.online}), 200
