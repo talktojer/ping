@@ -16,10 +16,7 @@ def detect_bot_mention(message):
 
 def fetch_last_n_messages(n=6):
     return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
-
-if detect_bot_mention(message):
-    last_six_messages = fetch_last_n_messages()
-    
+   
     # Convert ChatMessage objects to a list of dictionaries
     last_six_messages_list = [
         {"role": "user", "content": f"{msg.username}: {msg.message}"}
@@ -89,7 +86,7 @@ def send_message():
     username = data.get('username')
     message = data.get('message')
 
-    if detect_bot_mention(message):  # Moved inside the function
+    if detect_bot_mention(message):  # This line should be here, inside the function
         last_six_messages = fetch_last_n_messages()
         
         # Convert ChatMessage objects to a list of dictionaries
