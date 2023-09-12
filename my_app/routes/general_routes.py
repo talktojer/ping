@@ -90,15 +90,15 @@ def send_message():
     username = data.get('username')
     message = data.get('message')
 
-    if detect_bot_mention(message):
+    if detect_bot_mention(message):  # Moved inside the function
         last_six_messages = fetch_last_n_messages()
         
         # Convert ChatMessage objects to a list of dictionaries
         last_six_messages_dict = [
-            {"role": "user", "content": msg.message}  # Removed "username": msg.username
+            {"role": "user", "content": msg.message}
             for msg in last_six_messages
         ]
-            
+        
         bot_response = get_completion(last_six_messages_dict)
         
         new_bot_message = ChatMessage(username="bot", message=bot_response)
