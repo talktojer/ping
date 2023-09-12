@@ -8,9 +8,12 @@ openai_routes = Blueprint('openai_routes', __name__)
 
 
 def get_completion(messages):
+    # Limit the context to the last 10 messages
+    limited_messages = messages[-10:]
+
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',
-        messages=messages,
+        messages=limited_messages,
         temperature=0.7,
         n=1,
         max_tokens=500,
