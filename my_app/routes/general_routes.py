@@ -98,25 +98,47 @@ def send_message():
     username = data.get('username')
     message = data.get('message')
 
+# Create and commit the user's message
+new_message = ChatMessage(username=username, message=message)
+db.session.add(new_message)
+db.session.commit()  # Commit the user's message first
+
+if detect_bot_mention(message):
+    last_six_messages = fetch_last_n_messages()
+    
+    # Convert ChatMessage objects to a list of dictionaries
+    last_six_messages_dict = [
+        {"role": "user", "content": msg.message}
+        for msg in last_six_messages
+    ]
+    
+    logging.debug(f"Sending the following to OpenAI API: {last_six_messages_dict}")
+    
+    bot_response = get_completion(last_six_messages_dict)
+    
+    logging.debug(f"Received the following from OpenAI API: {bot_response}")
+    
+    # Fetch the last 10 messages from the database
+    last_ten_messages = fetch_last_n_messages(n=10)
+    
+    # Convert ChatMessage objects to a list of dictionaries
+    last_ten_messages_dict = [
+        {"role": "user", "content": msg.message}
+        for msg in last_ten_messages
+    ]
+    
+    bot_response = get_completion(last_ten_messages_dict)
+    
+    # Create and commit the bot's message
+    new_bot_message = ChatMessage(username="bot", message=bot_response)
+    db.session.add(new_bot_message)
+    db.session.commit() # Commit the bot's message after the user's message
+
+
+    # Create and commit the user's message
     new_message = ChatMessage(username=username, message=message)
     db.session.add(new_message)
-    db.session.commit()  # Commit the user's message first
-
-    if detect_bot_mention(message):
-        last_six_messages = fetch_last_n_messages()
-
-        # Convert ChatMessage objects to a list of dictionaries
-        last_six_messages_dict = [
-            {"role": "user", "content": msg.message}
-            for msg in last_six_messages
-        ]
-        
-        bot_response = get_completion(last_six_messages_dict)
-        
-        # Create and commit the bot's message
-        new_bot_message = ChatMessage(username="bot", message=bot_response)
-        db.session.add(new_bot_message)
-        db.session.commit() 
+    db.session.commit()
 
     logging.debug(f"Committed messages to the database.")
 
