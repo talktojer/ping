@@ -8,7 +8,7 @@ import logging
 import re
 from my_app.routes.openai_routes import get_completion
 import os
-
+logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
 
 def detect_bot_mention(message):
@@ -100,7 +100,11 @@ def send_message():
             for msg in last_six_messages
         ]
         
+        logging.debug(f"Sending the following to OpenAI API: {last_six_messages_dict}")
+
         bot_response = get_completion(last_six_messages_dict)
+
+        logging.debug(f"Received the following from OpenAI API: {bot_response}")
         
         # Create and commit the bot's message
         new_bot_message = ChatMessage(username="bot", message=bot_response)
@@ -108,6 +112,7 @@ def send_message():
         db.session.commit()
 
     return jsonify({'status': 'success'})
+
 
 
 @general_routes.route('/get_messages', methods=['GET'])
