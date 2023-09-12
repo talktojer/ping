@@ -16,6 +16,7 @@ class SystemStatus(db.Model):
 
 class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    unique_id = db.Column(db.String(36))
     username = db.Column(db.String(50), nullable=False)
     message = db.Column(db.String(500), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
