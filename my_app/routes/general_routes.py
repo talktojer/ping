@@ -140,9 +140,9 @@ if detect_bot_mention(message):
     db.session.add(new_message)
     db.session.commit()
 
-    logging.debug(f"Committed messages to the database.")
+logging.debug(f"Committed messages to the database.")
 
-    return jsonify({'status': 'success'})
+return jsonify({'status': 'success'})
 
 
 
