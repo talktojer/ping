@@ -11,6 +11,8 @@ from my_app.routes.openai_routes import get_completion
 import os
 import uuid
 from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 limiter = Limiter(app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
