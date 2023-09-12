@@ -9,6 +9,8 @@ import re
 from my_app.routes.openai_routes import get_completion
 import os
 import uuid
+from flask_limiter import Limiter
+limiter = Limiter(app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
 
@@ -74,14 +76,27 @@ def ping():
         return jsonify({"error": str(e)}), 500
     pass
 
+
 @general_routes.route('/send_message', methods=['POST'])
+@limiter.limit("1 per second")
 def send_message():
     unique_id = uuid.uuid4()
     client_ip = request.remote_addr
     logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
+
+    existing_message = ChatMessage.query.filter_by(unique_id=unique_id).first()
+    if existing_message:
+        return jsonify({'status': 'duplicate'}), 409
+
+    user_agent = request.headers.get('User-Agent')
+    logging.debug(f"User-Agent: {user_agent}")
+
     data = request.json
     username = data.get('username')
     message = data.get('message')
+
+    # ... rest of your existing code
+
 
     if detect_bot_mention(message):
         last_six_messages = fetch_last_n_messages()
@@ -97,6 +112,7 @@ def send_message():
         bot_response = get_completion(last_six_messages_dict)
 
         logging.debug(f"Received the following from OpenAI API: {bot_response}")
+
         
         # Create and commit the bot's message
         new_bot_message = ChatMessage(username="bot", message=bot_response)
