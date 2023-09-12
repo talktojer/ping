@@ -86,7 +86,12 @@ def send_message():
     username = data.get('username')
     message = data.get('message')
 
-    if detect_bot_mention(message):  # This line should be here, inside the function
+    # Create and commit the user's message first
+    new_message = ChatMessage(username=username, message=message)
+    db.session.add(new_message)
+    db.session.commit()
+
+    if detect_bot_mention(message):
         last_six_messages = fetch_last_n_messages()
         
         # Convert ChatMessage objects to a list of dictionaries
@@ -97,12 +102,10 @@ def send_message():
         
         bot_response = get_completion(last_six_messages_dict)
         
+        # Create and commit the bot's message
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
-
-    new_message = ChatMessage(username=username, message=message)
-    db.session.add(new_message)
-    db.session.commit()
+        db.session.commit()
 
     return jsonify({'status': 'success'})
 
