@@ -73,23 +73,11 @@ def ping():
         return jsonify({"error": str(e)}), 500
     pass
 
-@general_routes.route('/status', methods=['GET'])
-def get_status():
-    status = SystemStatus.query.first()
-    return jsonify({"online": status.online}), 200
-
-from my_app.models import ChatMessage
-
 @general_routes.route('/send_message', methods=['POST'])
 def send_message():
     data = request.json
     username = data.get('username')
     message = data.get('message')
-
-    # Create and commit the user's message first
-    new_message = ChatMessage(username=username, message=message)
-    db.session.add(new_message)
-    db.session.commit()
 
     if detect_bot_mention(message):
         last_six_messages = fetch_last_n_messages()
@@ -109,9 +97,16 @@ def send_message():
         # Create and commit the bot's message
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
-        db.session.commit()
+
+    # Create and commit the user's message
+    new_message = ChatMessage(username=username, message=message)
+    db.session.add(new_message)
+    db.session.commit()
+
+    logging.debug(f"Committed messages to the database.")
 
     return jsonify({'status': 'success'})
+
 
 
 
