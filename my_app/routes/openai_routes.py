@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 import openai
 import re
 import os
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 openai_routes = Blueprint('openai_routes', __name__)
 
