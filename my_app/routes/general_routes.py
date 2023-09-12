@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, render_template_string, session
 from datetime import datetime, timedelta
 from my_app import db
 from my_app.models import User
+from my_app import app
 import requests
 from my_app.models import SystemStatus, ChatMessage
 import logging
@@ -10,7 +11,7 @@ from my_app.routes.openai_routes import get_completion
 import os
 import uuid
 from flask_limiter import Limiter
-limiter = Limiter(my_app, key_func=get_remote_address)
+limiter = Limiter(app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
 
