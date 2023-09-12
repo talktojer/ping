@@ -10,7 +10,7 @@ from my_app.routes.openai_routes import get_completion
 import os
 import uuid
 from flask_limiter import Limiter
-limiter = Limiter(app, key_func=get_remote_address)
+limiter = Limiter(my_app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
 
@@ -94,9 +94,6 @@ def send_message():
     data = request.json
     username = data.get('username')
     message = data.get('message')
-
-    # ... rest of your existing code
-
 
     if detect_bot_mention(message):
         last_six_messages = fetch_last_n_messages()
