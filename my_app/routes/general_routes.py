@@ -8,6 +8,7 @@ import logging
 import re
 from my_app.routes.openai_routes import get_completion
 import os
+import uuid
 logging.basicConfig(level=logging.DEBUG)
 general_routes = Blueprint('general_routes', __name__)
 
@@ -116,11 +117,14 @@ def get_messages():
     messages = [{"username": msg.username, "message": msg.message} for msg in all_messages]
     return jsonify({"messages": messages}), 200
 
+
 @general_routes.route('/fetch_messages', methods=['GET'])
 def fetch_messages():
-    messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
-    messages_list = [{'username': msg.username, 'message': msg.message} for msg in messages]
-    return jsonify(messages_list)
+    unique_id = uuid.uuid4()  # Generate a unique UUID for this request
+    logging.debug(f"fetch_messages called, unique_id: {unique_id}")
+
+    # rest of your code
+
 
 @general_routes.route('/clear_messages', methods=['POST'])
 def clear_messages():
