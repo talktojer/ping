@@ -13,7 +13,8 @@ import os
 
 general_routes = Blueprint('general_routes', __name__)
 
-
+def detect_bot_mention(message):
+    return bool(re.search(r"@bot", message))   
 if detect_bot_mention(message):
     last_six_messages = fetch_last_n_messages()
     
