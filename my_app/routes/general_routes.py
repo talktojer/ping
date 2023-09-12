@@ -76,6 +76,9 @@ def ping():
 
 @general_routes.route('/send_message', methods=['POST'])
 def send_message():
+    unique_id = uuid.uuid4()
+    client_ip = request.remote_addr
+    logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
     data = request.json
     username = data.get('username')
     message = data.get('message')
@@ -117,14 +120,11 @@ def get_messages():
     messages = [{"username": msg.username, "message": msg.message} for msg in all_messages]
     return jsonify({"messages": messages}), 200
 
-
 @general_routes.route('/fetch_messages', methods=['GET'])
 def fetch_messages():
-    unique_id = uuid.uuid4()  # Generate a unique UUID for this request
-    logging.debug(f"fetch_messages called, unique_id: {unique_id}")
-
-    # rest of your code
-
+    messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
+    messages_list = [{'username': msg.username, 'message': msg.message} for msg in messages]
+    return jsonify(messages_list)
 
 @general_routes.route('/clear_messages', methods=['POST'])
 def clear_messages():
