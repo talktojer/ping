@@ -12,9 +12,8 @@ import os
 
 
 general_routes = Blueprint('general_routes', __name__)
-def detect_bot_mention(message):
-    return bool(re.search(r"@bot", message))
-    
+
+
 if detect_bot_mention(message):
     last_six_messages = fetch_last_n_messages()
     
@@ -31,6 +30,8 @@ if detect_bot_mention(message):
     
     new_bot_message = ChatMessage(username="bot", message=bot_response)
     db.session.add(new_bot_message)
+def detect_bot_mention(message):
+    return bool(re.search(r"@bot", message))    
 def fetch_last_n_messages(n=6):
     return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
 
