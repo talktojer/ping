@@ -13,8 +13,22 @@ import os
 
 general_routes = Blueprint('general_routes', __name__)
 
-def detect_bot_mention(message):
-    return bool(re.search(r"@bot", message))
+if detect_bot_mention(message):
+    last_six_messages = fetch_last_n_messages()
+    
+    # Convert ChatMessage objects to a list of dictionaries
+    last_six_messages_list = [
+        {"role": "user", "content": f"{msg.username}: {msg.message}"}
+        for msg in last_six_messages
+    ]
+    
+    # Add the system message to initialize the conversation
+    last_six_messages_list.insert(0, {"role": "system", "content": "You are a helpful assistant."})
+    
+    bot_response = get_completion(last_six_messages_list)
+    
+    new_bot_message = ChatMessage(username="bot", message=bot_response)
+    db.session.add(new_bot_message)
 def fetch_last_n_messages(n=6):
     return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
 
@@ -77,10 +91,10 @@ def send_message():
         
         # Convert ChatMessage objects to a list of dictionaries
         last_six_messages_dict = [
-            {"role": "user", "username": msg.username, "content": msg.message}
+            {"role": "user", "content": msg.message}  # Removed "username": msg.username
             for msg in last_six_messages
         ]
-        
+            
         bot_response = get_completion(last_six_messages_dict)
         
         new_bot_message = ChatMessage(username="bot", message=bot_response)
