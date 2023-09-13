@@ -17,24 +17,16 @@ def get_completion(messages):
         
         payload = {
             "engine": "text-davinci-002",
-            "prompt": json.dumps(conversation),
+            "prompt": conversation,
             "max_tokens": 2048
         }
         
-        logging.info(f"Sending API request with payload: {json.dumps(payload)}")
+        logging.info(f"Sending API request with payload: {payload}")
         
         response = openai.Completion.create(**payload)
         logging.info(f"OpenAI API Response: {response}")
         logging.info(f"Raw Bot Response: {response.choices[0].text}")
         completion = response.choices[0].text.strip()
-        return completion
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return None
-        
-
-        
-        
         return completion
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -57,11 +49,11 @@ def get_bot_response(conversation_history):
         
         payload = {
             "engine": "text-davinci-002",
-            "prompt": json.dumps(conversation),
+            "prompt": conversation,
             "max_tokens": 2048
         }
         
-        logging.info(f"Sending API request with payload: {json.dumps(payload)}")
+        logging.info(f"Sending API request with payload: {payload}")
         
         response = openai.Completion.create(**payload)
         logging.info(f"OpenAI API Response: {response}")
