@@ -3,8 +3,6 @@ import openai
 import os
 import json
 
-from .shared_resources import conversation_with_summary
-
 def initialize_conversation_chain():
     global conversation_with_summary  # Declare the variable as global
     llm = OpenAI(temperature=0)
