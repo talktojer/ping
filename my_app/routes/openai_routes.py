@@ -55,6 +55,7 @@ def get_bot_response(conversation_history):
             max_tokens=2048
         )
         
+        
         print(f"OpenAI API Response: {response}")
         print(f"Raw Bot Response: {response.choices[0].text}")
         
