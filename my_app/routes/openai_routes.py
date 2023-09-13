@@ -24,7 +24,7 @@ def get_completion(messages):
         limited_messages = messages[-10:]
         print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
         formatted_input = {
-            'adjective': 'funny',
+            'input': 'funny',
             'conversation': str(last_ten_messages_dict_with_username)
         }
         logging.debug("Calling predict() with formatted_input: %s", formatted_input)
