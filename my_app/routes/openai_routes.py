@@ -15,7 +15,7 @@ def get_completion(messages):
         response = openai.Completion.create(
             engine="text-davinci-002",
             prompt=conversation,
-            max_tokens=4096
+            max_tokens=2048
         )
         print(f"OpenAI API Response: {response}")
         completion = response.choices[0].text.strip()
@@ -40,7 +40,7 @@ def get_bot_response(conversation):
         response = openai.Completion.create(
             engine="text-davinci-002",
             prompt=conversation,
-            max_tokens=4096
+            max_tokens=2048
         )
         print(f"OpenAI API Response: {response}")
         return response.choices[0].text.strip()
