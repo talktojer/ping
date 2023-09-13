@@ -129,11 +129,15 @@ someone "Pinged" me.
     let messagesArray = [];
 
     function sendMessage() {
+        console.log("sendMessage function called");  // Debugging line
+    
         const message = document.getElementById("chatInput").value;
         if (message.trim() === '') return;
     
         // Disable the send button to prevent multiple clicks
         document.querySelector("button[onclick='sendMessage()']").disabled = true;
+    
+        console.log("About to send fetch request to /send_message");  // Debugging line
     
         fetch('/send_message', {
             method: 'POST',
@@ -141,7 +145,10 @@ someone "Pinged" me.
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ username: "{{ username }}", message: message })
-        }).then(response => response.json()).then(data => {
+        }).then(response => {
+            console.log("Received response from /send_message");  // Debugging line
+            return response.json();
+        }).then(data => {
             if (data.status === 'success') {
                 document.getElementById("chatInput").value = '';  // Clear the input box
                 fetchMessages();  // Fetch updated messages
