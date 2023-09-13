@@ -106,6 +106,7 @@ def send_message():
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
 
+
 @general_routes.route('/get_messages', methods=['GET'])
 def get_messages():
     all_messages = ChatMessage.query.order_by(ChatMessage.timestamp).all()
