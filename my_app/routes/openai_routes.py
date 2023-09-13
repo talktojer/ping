@@ -39,19 +39,28 @@ def get_completion_route():
     completion = get_completion(messages)
     return jsonify({'completion': completion})
 
-def get_bot_response(conversation):
+def get_bot_response(conversation_history):
     try:
-        print(f"Conversation Prompt: {conversation}")
-        test_prompt = "Hello, how are you?"  # Hardcoded test prompt
+        # Filter out lines where the bot didn't respond
+        filtered_history = [line for line in conversation_history.split('\n') if not (line.startswith('bot: ') and len(line) == 5)]
+        
+        # Reconstruct the conversation
+        conversation = "\n".join(filtered_history)
+        
+        print(f"Filtered Conversation Prompt: {conversation}")
+        
         response = openai.Completion.create(
             engine="text-davinci-002",
-            prompt=test_prompt,  # Use test prompt
-            max_tokens=50  # Reduced max tokens for testing
+            prompt=conversation,
+            max_tokens=50
         )
+        
         print(f"OpenAI API Response: {response}")
         print(f"Raw Bot Response: {response.choices[0].text}")
+        
         return response.choices[0].text.strip()
         
     except Exception as e:
         print(f"Error: {e}")
         return None
+
