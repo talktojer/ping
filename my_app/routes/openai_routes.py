@@ -22,19 +22,16 @@ openai_routes = Blueprint('openai_routes', __name__)
 def get_completion(messages):
     try:
         limited_messages = messages[-10:]
-        print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
-        formatted_input = {
-            'input': 'funny',
-            'conversation': str(last_ten_messages_dict_with_username)
-        }
-        logging.debug("Calling predict() with formatted_input: %s", formatted_input)
-        try:
-            bot_response = conversation_with_summary.predict(values=formatted_input)
-        except Exception as e:
-            print(f"An error occurred: {e}")
-        logging.debug(f"Bot response: {bot_response}")
-        return bot_response
-
+        conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
+        
+        response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=conversation,
+            max_tokens=50
+        )
+        completion = response.choices[0].text.strip()
+        
+        return completion
     except Exception as e:
         print(f"Error: {e}")
         return None
