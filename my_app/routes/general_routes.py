@@ -97,8 +97,11 @@ def send_message():
         bot_response = get_bot_response(conversation)  # Call the new function
 
         new_bot_message = ChatMessage(username="bot", message=bot_response)
+        print(f"Bot Response: {bot_response}")
         db.session.add(new_bot_message)
         db.session.commit()
+        print(f"Committed bot message: {new_bot_message.message}")
+
 
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
