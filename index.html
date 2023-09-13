@@ -174,7 +174,7 @@ someone "Pinged" me.
 
         
 
-fetchMessages() {
+    function fetchMessages() {
         fetch('/fetch_messages')
             .then(response => response.json())
             .then(data => {
