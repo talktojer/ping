@@ -45,3 +45,15 @@ def get_completion_route():
 
     completion = get_completion(messages)
     return jsonify({'completion': completion})
+
+def get_bot_response(conversation):
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=conversation,
+            max_tokens=50
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        print(f"Error: {e}")
+        return None

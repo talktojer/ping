@@ -13,6 +13,7 @@ import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import openai
+from my_app.routes.openai_routes import get_bot_response
 
 limiter = Limiter(app=app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
@@ -94,21 +95,12 @@ def send_message():
         last_ten_messages = fetch_last_n_messages(10)
         conversation = "\n".join([f"{msg.username}: {msg.message}" for msg in last_ten_messages])
         
-        try:
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=conversation,
-                max_tokens=50
-            )
-            bot_response = response.choices[0].text.strip()
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            bot_response = "An error occurred."
-        
+        bot_response = get_bot_response(conversation)  # Call the new function
+
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()
-    
+        
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
 
