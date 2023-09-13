@@ -6,13 +6,16 @@ from langchain import OpenAI, PromptTemplate, LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chains import ConversationChain
+from .shared_resources import conversation_with_summary
 
-llm = OpenAI(temperature=0)
-conversation_with_summary = ConversationChain(
-    llm=llm,
-    memory=ConversationSummaryBufferMemory(llm=OpenAI(), max_token_limit=40),
-    verbose=True
-)
+def initialize_conversation_chain():
+    global conversation_with_summary  # Declare the variable as global
+    llm = OpenAI(temperature=0)
+    conversation_with_summary = ConversationChain(
+        llm=llm,
+        memory=ConversationSummaryBufferMemory(llm=OpenAI(), max_token_limit=40),
+        verbose=True
+    )
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
 
