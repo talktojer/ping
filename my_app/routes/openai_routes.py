@@ -11,7 +11,7 @@ def get_completion(messages):
         limited_messages = messages[-10:]
         response = openai.ChatCompletion.create(
             model='gpt-3.5-turbo',
-            messages=limited_messages,
+            messages=[{"role": "system", "content": "You are a helpful assistant."}] + limited_messages,
             temperature=0.7,
             n=1,
             max_tokens=500,
