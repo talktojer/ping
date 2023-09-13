@@ -93,25 +93,23 @@ def send_message():
 
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
-        last_ten_messages_dict_with_username = [
-            {"role": "user", "content": f"{msg.username}: {msg.message}"}
-            for msg in last_ten_messages
-        ]
-        print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
-        formatted_input = {
-            'input': 'funny',
-            'conversation': str(last_ten_messages_dict_with_username)
-        }
-        logging.debug("Calling predict() with formatted_input: %s", formatted_input)     
+        conversation = "\n".join([f"{msg.username}: {msg.message}" for msg in last_ten_messages])
+        
         try:
-            bot_response = conversation_with_summary.predict(values=formatted_input)
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=conversation,
+                max_tokens=50
+            )
+            bot_response = response.choices[0].text.strip()
         except Exception as e:
             print(f"An error occurred: {e}")
-
+            bot_response = "An error occurred."
+        
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()
-
+    
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
 
