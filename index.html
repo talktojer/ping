@@ -62,12 +62,8 @@
         {% if username == 'admin' %}
         <button id="clearMessages" onclick="clearAllMessages()">Clear All Messages</button>
         {% endif %}
-        <script>
-            fetchMessages();  // Fetch messages immediately when chat box is present
-        </script>
     </div>
     {% endif %}
-
 
     <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
@@ -216,10 +212,6 @@ someone "Pinged" me.
             console.error("Element with ID 'chatInput' not found.");
         }
     });
-    
-    
-
 </script>
 </body>
 </html>
-
