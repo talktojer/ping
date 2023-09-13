@@ -6,6 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
 
@@ -13,6 +14,9 @@ def get_completion(messages):
     try:
         limited_messages = messages[-10:]
         conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
+        
+        # Log the API request details
+        logging.info(f"Sending API request with prompt: {conversation}, engine: text-davinci-002, max_tokens: 2048")
         
         response = openai.Completion.create(
             engine="text-davinci-002",
@@ -22,6 +26,10 @@ def get_completion(messages):
         logging.info(f"OpenAI API Response: {response}")
         logging.info(f"Raw Bot Response: {response.choices[0].text}")
         completion = response.choices[0].text.strip()
+        return completion
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        return None
         
 
         
@@ -49,20 +57,17 @@ def get_bot_response(conversation_history):
         # Reconstruct the conversation
         conversation = "\n".join(filtered_history)
         
-
+        # Log the API request details
+        logging.info(f"Sending API request with filtered prompt: {conversation}, engine: text-davinci-002, max_tokens: 2048")
         
         response = openai.Completion.create(
             engine="text-davinci-002",
             prompt=conversation,
             max_tokens=2048
         )
-        
-        logging.info(f"Filtered Conversation Prompt: {conversation}")
         logging.info(f"OpenAI API Response: {response}")
         logging.info(f"Raw Bot Response: {response.choices[0].text}")
-        
         return response.choices[0].text.strip()
-        
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return None
