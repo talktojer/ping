@@ -30,8 +30,9 @@ def get_completion(messages):
             bot_response = conversation_with_summary.predict(values=formatted_input)
         except Exception as e:
             print(f"An error occurred: {e}")
+        logging.debug(f"Bot response: {bot_response}")
+        return bot_response
 
-        return response
     except Exception as e:
         print(f"Error: {e}")
         return None
