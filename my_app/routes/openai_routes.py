@@ -24,8 +24,10 @@ def get_completion(messages):
         limited_messages = messages[-10:]
         print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
         formatted_input = {
-        'conversation': str(last_ten_messages_dict_with_username)
-    }
+            'adjective': 'funny',
+            'conversation': str(last_ten_messages_dict_with_username)
+        }
+        logging.debug("Calling predict() with formatted_input: %s", formatted_input)
         try:
             bot_response = conversation_with_summary.predict(values=formatted_input)
         except Exception as e:
