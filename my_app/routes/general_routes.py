@@ -22,21 +22,6 @@ def detect_bot_mention(message):
 
 def fetch_last_n_messages(n=6):
     return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
-   
-    # Convert ChatMessage objects to a list of dictionaries
-    last_six_messages_list = [
-        {"role": "user", "content": f"{msg.username}: {msg.message}"}
-        for msg in last_six_messages
-    ]
-    
-    # Add the system message to initialize the conversation
-    last_six_messages_list.insert(0, {"role": "system", "content": "You are a helpful assistant."})
-    
-    bot_response = get_completion(last_six_messages_list)
-    
-    new_bot_message = ChatMessage(username="bot", message=bot_response)
-    db.session.add(new_bot_message)
-
 
 def get_active_users():
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
@@ -55,9 +40,6 @@ def index():
     active_users = get_active_users()
     active_users_idle_times = {user.username: int((datetime.utcnow() - user.last_active).total_seconds()) for user in active_users}
     return render_template_string(open('index.html').read(), username=username, active_users_idle_times=active_users_idle_times)
-    pass
-
-
 
 @general_routes.route('/ping', methods=['POST'])
 def ping():
@@ -77,8 +59,8 @@ def ping():
     except Exception as e:
         logging.error(f"Error in /ping: {e}")
         return jsonify({"error": str(e)}), 500
-    pass
 
+bot_command_detected = False
 
 @general_routes.route('/send_message', methods=['POST'])
 @limiter.limit("1 per second")
@@ -103,46 +85,31 @@ def send_message():
     db.session.add(new_message)
     db.session.commit()  # Commit the user's message first
 
-    if detect_bot_mention(message):
-        last_six_messages = fetch_last_n_messages()
+    global bot_command_detected
 
+    if detect_bot_mention(message):
+        last_six_messages = fetch_last_n_messages()[:-1]  # Exclude the user's current message
+        
         # Convert ChatMessage objects to a list of dictionaries
         last_six_messages_dict = [
             {"role": "user", "content": msg.message}
             for msg in last_six_messages
         ]
-
+        
         logging.debug(f"Sending the following to OpenAI API: {last_six_messages_dict}")
 
         bot_response = get_completion(last_six_messages_dict)
 
         logging.debug(f"Received the following from OpenAI API: {bot_response}")
 
-        # Fetch the last 10 messages from the database
-        last_ten_messages = fetch_last_n_messages(n=10)
-
-        # Convert ChatMessage objects to a list of dictionaries
-        last_ten_messages_dict = [
-            {"role": "user", "content": msg.message}
-            for msg in last_ten_messages
-        ]
-
-        bot_response = get_completion(last_ten_messages_dict)
-
-        # Create and commit the bot's message
+        # Create and commit the bot's message immediately after the user's message
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()  # Commit the bot's message after the user's message
 
-    # Create and commit the user's message (This part was duplicated in your code)
-    new_message = ChatMessage(username=username, message=message)
-    db.session.add(new_message)
-    db.session.commit()
-
     logging.debug(f"Committed messages to the database.")
 
     return jsonify({'status': 'success'})
-
 
 @general_routes.route('/get_messages', methods=['GET'])
 def get_messages():
