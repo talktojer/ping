@@ -2,21 +2,25 @@ from flask import Blueprint, request, jsonify
 import openai
 import os
 import json
+from langchain import OpenAI, PromptTemplate, LLMChain
+from langchain.prompts import PromptTemplate
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.chains import ConversationChain
 
+llm = OpenAI(temperature=0)
+conversation_with_summary = ConversationChain(
+    llm=llm,
+    memory=ConversationSummaryBufferMemory(llm=OpenAI(), max_token_limit=40),
+    verbose=True
+)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
 
 def get_completion(messages):
     try:
         limited_messages = messages[-10:]
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
-            messages=[{"role": "system", "content": "You are a helpful assistant."}] + limited_messages,
-            temperature=0.7,
-            n=1,
-            max_tokens=500,
-        )
-        return response.choices[0].message.content
+        response = conversation_with_summary.predict(input=limited_messages)
+        return response
     except Exception as e:
         print(f"Error: {e}")
         return None
