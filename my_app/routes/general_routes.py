@@ -96,11 +96,15 @@ def send_message():
         
         bot_response = get_bot_response(conversation)  # Call the new function
 
+        # Remove the 'bot:' prefix if present
+        bot_response = bot_response[5:] if bot_response.startswith("bot: ") else bot_response
+
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         print(f"Bot Response: {bot_response}")
         db.session.add(new_bot_message)
         db.session.commit()
         print(f"Committed bot message: {new_bot_message.message}")
+
 
 
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
