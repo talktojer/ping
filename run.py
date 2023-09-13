@@ -11,7 +11,7 @@ args = parser.parse_args()
 
 # Database setup function
 def setup_database():
-    db_path = "/usr/app/src/db/users.db"  # Adjust this path as needed
+    db_path = os.getenv("DATABASE_URI", "/usr/app/src/db/users.db")  # Adjust this path as needed
 
     # Delete the existing database file if it exists
     if os.path.exists(db_path):
@@ -41,4 +41,4 @@ if args.setup:
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8092)
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 8092)))
