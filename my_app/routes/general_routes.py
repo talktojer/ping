@@ -67,6 +67,7 @@ bot_command_detected = False
 @general_routes.route('/send_message', methods=['POST'])
 @limiter.limit("5 per second")
 def send_message():
+    bot_response = ""
     unique_id = str(uuid.uuid4())
     client_ip = request.remote_addr
     logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
