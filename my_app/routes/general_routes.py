@@ -63,11 +63,12 @@ def ping():
 bot_command_detected = False
 
 @general_routes.route('/send_message', methods=['POST'])
-@limiter.limit("5 per second")  # Reduced rate limit
+@limiter.limit("5 per second")
 def send_message():
     unique_id = str(uuid.uuid4())
     client_ip = request.remote_addr
     logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
+
 
     existing_message = ChatMessage.query.filter_by(unique_id=unique_id).first()
     if existing_message:
@@ -98,7 +99,7 @@ def send_message():
         db.session.add(new_bot_message)
         db.session.commit()
 
-    logging.debug(f"Committed messages to the database.")
+    logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
 
 @general_routes.route('/get_messages', methods=['GET'])
