@@ -63,7 +63,7 @@ def ping():
 bot_command_detected = False
 
 @general_routes.route('/send_message', methods=['POST'])
-@limiter.limit("1 per second")
+@limiter.limit("20 per second")
 def send_message():
     unique_id = uuid.uuid4()
     client_ip = request.remote_addr
