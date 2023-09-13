@@ -7,7 +7,6 @@ import requests
 from my_app.models import SystemStatus, ChatMessage
 import logging
 import re
-from my_app.routes.openai_routes import get_completion
 import os
 import uuid
 from flask_limiter import Limiter
@@ -100,7 +99,7 @@ def send_message():
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()
-        
+
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
     return jsonify({'status': 'success'})
 

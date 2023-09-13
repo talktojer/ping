@@ -2,10 +2,7 @@ from flask import Blueprint, request, jsonify
 import openai
 import os
 import json
-from langchain import OpenAI, PromptTemplate, LLMChain
-from langchain.prompts import PromptTemplate
-from langchain.memory import ConversationSummaryBufferMemory
-from langchain.chains import ConversationChain
+
 from .shared_resources import conversation_with_summary
 
 def initialize_conversation_chain():
