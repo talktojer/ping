@@ -63,4 +63,3 @@ def get_bot_response(conversation_history):
     except Exception as e:
         print(f"Error: {e}")
         return None
-
