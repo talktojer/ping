@@ -90,12 +90,11 @@ def send_message():
 
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
-        last_ten_messages_dict = [
-            {"role": "user", "content": msg.message}
+        last_ten_messages_dict_with_username = [
+            {"role": "user", "content": f"{msg.username}: {msg.message}"}
             for msg in last_ten_messages
         ]
-        last_ten_messages_dict_with_username = [{"role": "user", "content": f"{msg.username}: {msg.message}"} for msg in last_ten_messages]
-        bot_response = get_completion(last_ten_messages_dict_with_username)
+        bot_response = conversation_with_summary.predict(input=last_ten_messages_dict_with_username)
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()
