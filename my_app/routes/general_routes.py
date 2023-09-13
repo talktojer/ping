@@ -20,7 +20,7 @@ general_routes = Blueprint('general_routes', __name__)
 def detect_bot_mention(message):
     return bool(re.search(r"@bot", message))
 
-def fetch_last_n_messages(n=6):
+def fetch_last_n_messages(n=10):
     return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
 
 def get_active_users():
@@ -63,9 +63,9 @@ def ping():
 bot_command_detected = False
 
 @general_routes.route('/send_message', methods=['POST'])
-@limiter.limit("20 per second")
+@limiter.limit("5 per second")  # Reduced rate limit
 def send_message():
-    unique_id = uuid.uuid4()
+    unique_id = str(uuid.uuid4())
     client_ip = request.remote_addr
     logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
 
@@ -81,34 +81,24 @@ def send_message():
     message = data.get('message')
 
     # Create and commit the user's message
-    new_message = ChatMessage(username=username, message=message)
+    new_message = ChatMessage(username=username, message=message, unique_id=unique_id)  # Added unique_id
     db.session.add(new_message)
-    db.session.commit()  # Commit the user's message first
+    db.session.commit()
 
     global bot_command_detected
 
     if detect_bot_mention(message):
-        last_six_messages = fetch_last_n_messages()[:-1]  # Exclude the user's current message
-        
-        # Convert ChatMessage objects to a list of dictionaries
-        last_six_messages_dict = [
+        last_ten_messages = fetch_last_n_messages(10)
+        last_ten_messages_dict = [
             {"role": "user", "content": msg.message}
-            for msg in last_six_messages
+            for msg in last_ten_messages
         ]
-        
-        logging.debug(f"Sending the following to OpenAI API: {last_six_messages_dict}")
-
-        bot_response = get_completion(last_six_messages_dict)
-
-        logging.debug(f"Received the following from OpenAI API: {bot_response}")
-
-        # Create and commit the bot's message immediately after the user's message
+        bot_response = get_completion(last_ten_messages_dict)
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
-        db.session.commit()  # Commit the bot's message after the user's message
+        db.session.commit()
 
     logging.debug(f"Committed messages to the database.")
-
     return jsonify({'status': 'success'})
 
 @general_routes.route('/get_messages', methods=['GET'])
