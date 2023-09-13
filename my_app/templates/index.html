@@ -160,20 +160,7 @@ someone "Pinged" me.
         });
     }
         
-    function fetchMessages() {
-        fetch('/fetch_messages')
-            .then(response => response.json())
-            .then(data => {
-                const messagesDiv = document.getElementById("messages");
-                messagesDiv.innerHTML = '';
-    
-                data.forEach(msg => {
-                    messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
-                });
-    
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
-    }
+
         
     function updateChatBox() {
         const messagesDiv = document.getElementById("messages");
@@ -194,7 +181,20 @@ someone "Pinged" me.
             sendMessage();  // Send the message
         }
     });
+    function fetchMessages() {
+        fetch('/fetch_messages')
+            .then(response => response.json())
+            .then(data => {
+                const messagesDiv = document.getElementById("messages");
+                messagesDiv.innerHTML = '';
     
+                data.forEach(msg => {
+                    messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
+                });
+    
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+    }    
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("Document loaded");  // Debug line
         updateStatus();
