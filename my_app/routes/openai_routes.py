@@ -13,15 +13,14 @@ openai_routes = Blueprint('openai_routes', __name__)
 def get_completion(messages):
     try:
         limited_messages = messages[-10:]
-        conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
+        conversation = [{"role": "user", "content": f"{msg['username']}: {msg['message']}"} for msg in limited_messages]
         
         payload = {
             "engine": "text-davinci-002",
-            "prompt": conversation,
+            "prompt": json.dumps(conversation),
             "max_tokens": 2048
         }
         
-        # Log the API request payload
         logging.info(f"Sending API request with payload: {json.dumps(payload)}")
         
         response = openai.Completion.create(**payload)
@@ -54,15 +53,14 @@ def get_completion_route():
 def get_bot_response(conversation_history):
     try:
         filtered_history = [line for line in conversation_history.split('\n') if not (line.startswith('bot: ') and len(line) == 5)]
-        conversation = "\n".join(filtered_history)
+        conversation = [{"role": "user", "content": line} for line in filtered_history]
         
         payload = {
             "engine": "text-davinci-002",
-            "prompt": conversation,
+            "prompt": json.dumps(conversation),
             "max_tokens": 2048
         }
         
-        # Log the API request payload
         logging.info(f"Sending API request with payload: {json.dumps(payload)}")
         
         response = openai.Completion.create(**payload)
