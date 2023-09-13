@@ -173,19 +173,6 @@ someone "Pinged" me.
         
 
         
-    function updateChatBox() {
-        const messagesDiv = document.getElementById("messages");
-        messagesDiv.innerHTML = '';  // Clear existing messages
-    
-        // Populate with updated messages
-        messagesArray.forEach(msg => {
-            messagesDiv.innerHTML += `<p><strong>${msg.username}:</strong> ${msg.message}</p>`;
-        });
-    
-        // Scroll to the bottom
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-    
 
 fetchMessages() {
         fetch('/fetch_messages')
