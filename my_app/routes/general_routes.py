@@ -5,7 +5,7 @@ from my_app.models import User
 from my_app import app
 import requests
 from my_app.models import SystemStatus, ChatMessage
-import logging
+
 import re
 import os
 import uuid
@@ -13,9 +13,10 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import openai
 from my_app.routes.openai_routes import get_bot_response
-
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 limiter = Limiter(app=app, key_func=get_remote_address)
-logging.basicConfig(level=logging.DEBUG)
+
 general_routes = Blueprint('general_routes', __name__)
 
 def detect_bot_mention(message):
@@ -69,7 +70,7 @@ def send_message():
     bot_response = ""
     unique_id = str(uuid.uuid4())
     client_ip = request.remote_addr
-    logging.debug(f"send_message called, unique_id: {unique_id}, client_ip: {client_ip}")
+
 
 
     existing_message = ChatMessage.query.filter_by(unique_id=unique_id).first()
@@ -85,25 +86,26 @@ def send_message():
 
     # Create and commit the user's message
     new_message = ChatMessage(username=username, message=message, unique_id=unique_id)  # Added unique_id
+    logging.info(f"Committed messages to the database. Unique ID: {unique_id}")
     db.session.add(new_message)
     db.session.commit()
 
     global bot_command_detected
-
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
         conversation = "\n".join([f"{msg.username}: {msg.message}" for msg in last_ten_messages])
         
         bot_response = get_bot_response(conversation)  # Call the new function
 
+        logging.info(f"Bot Response: {bot_response}")  # Replaced print with logging.info
+
         new_bot_message = ChatMessage(username="bot", message=bot_response)
-        print(f"Bot Response: {bot_response}")
         db.session.add(new_bot_message)
         db.session.commit()
-        print(f"Committed bot message: {new_bot_message.message}")
 
+        logging.info(f"Committed bot message: {new_bot_message.message}")  # Replaced print with logging.info
 
-    logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Added unique_id for debugging
+    logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Existing debug log
     return jsonify({'status': 'success'})
 
 
