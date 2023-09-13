@@ -12,8 +12,7 @@ import os
 import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from .openai_routes import conversation_with_summary
-from .shared_resources import conversation_with_summary
+import openai
 
 limiter = Limiter(app=app, key_func=get_remote_address)
 logging.basicConfig(level=logging.DEBUG)
