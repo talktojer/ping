@@ -96,6 +96,7 @@ def send_message():
             {"role": "user", "content": f"{msg.username}: {msg.message}"}
             for msg in last_ten_messages
         ]
+        print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
         bot_response = conversation_with_summary.predict(input=last_ten_messages_dict_with_username)
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)

@@ -22,6 +22,7 @@ openai_routes = Blueprint('openai_routes', __name__)
 def get_completion(messages):
     try:
         limited_messages = messages[-10:]
+        print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
         response = conversation_with_summary.predict(input=limited_messages)
         return response
     except Exception as e:
