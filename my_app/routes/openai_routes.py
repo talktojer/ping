@@ -18,7 +18,11 @@ def get_completion(messages):
             max_tokens=2048
         )
         print(f"OpenAI API Response: {response}")
+        print(f"Raw Bot Response: {response.choices[0].text}")
         completion = response.choices[0].text.strip()
+        
+
+        
         
         return completion
     except Exception as e:
@@ -37,12 +41,14 @@ def get_completion_route():
 
 def get_bot_response(conversation):
     try:
+        print(f"Conversation Prompt: {conversation}")
         response = openai.Completion.create(
             engine="text-davinci-002",
             prompt=conversation,
             max_tokens=2048
         )
         print(f"OpenAI API Response: {response}")
+        print(f"Raw Bot Response: {response.choices[0].text}")
         return response.choices[0].text.strip()
         
     except Exception as e:
