@@ -23,7 +23,14 @@ def get_completion(messages):
     try:
         limited_messages = messages[-10:]
         print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
-        response = conversation_with_summary.predict(input=limited_messages)
+        formatted_input = {
+        'conversation': str(last_ten_messages_dict_with_username)
+    }
+        try:
+            bot_response = conversation_with_summary.predict(values=formatted_input)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
         return response
     except Exception as e:
         print(f"Error: {e}")

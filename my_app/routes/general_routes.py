@@ -97,7 +97,14 @@ def send_message():
             for msg in last_ten_messages
         ]
         print(type(last_ten_messages_dict_with_username), last_ten_messages_dict_with_username)
-        bot_response = conversation_with_summary.predict(input=last_ten_messages_dict_with_username)
+        formatted_input = {
+            'conversation': str(last_ten_messages_dict_with_username)
+        }        
+        try:
+            bot_response = conversation_with_summary.predict(values=formatted_input)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
         new_bot_message = ChatMessage(username="bot", message=bot_response)
         db.session.add(new_bot_message)
         db.session.commit()
