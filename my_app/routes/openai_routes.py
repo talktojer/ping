@@ -52,7 +52,7 @@ def get_bot_response(conversation_history):
         response = openai.Completion.create(
             engine="text-davinci-002",
             prompt=conversation,
-            max_tokens=50
+            max_tokens=2048
         )
         
         print(f"OpenAI API Response: {response}")
