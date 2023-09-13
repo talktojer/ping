@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 import openai
 import os
 import json
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -17,8 +19,8 @@ def get_completion(messages):
             prompt=conversation,
             max_tokens=2048
         )
-        print(f"OpenAI API Response: {response}")
-        print(f"Raw Bot Response: {response.choices[0].text}")
+        logging.info(f"OpenAI API Response: {response}")
+        logging.info(f"Raw Bot Response: {response.choices[0].text}")
         completion = response.choices[0].text.strip()
         
 
@@ -26,7 +28,7 @@ def get_completion(messages):
         
         return completion
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         return None
 
 @openai_routes.route('/get_completion', methods=['POST'])
@@ -47,7 +49,7 @@ def get_bot_response(conversation_history):
         # Reconstruct the conversation
         conversation = "\n".join(filtered_history)
         
-        print(f"Filtered Conversation Prompt: {conversation}")
+
         
         response = openai.Completion.create(
             engine="text-davinci-002",
@@ -55,9 +57,9 @@ def get_bot_response(conversation_history):
             max_tokens=2048
         )
         
-        
-        print(f"OpenAI API Response: {response}")
-        print(f"Raw Bot Response: {response.choices[0].text}")
+        logging.info(f"Filtered Conversation Prompt: {conversation}")
+        logging.info(f"OpenAI API Response: {response}")
+        logging.info(f"Raw Bot Response: {response.choices[0].text}")
         
         return response.choices[0].text.strip()
         
