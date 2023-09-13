@@ -42,10 +42,11 @@ def get_completion_route():
 def get_bot_response(conversation):
     try:
         print(f"Conversation Prompt: {conversation}")
+        test_prompt = "Hello, how are you?"  # Hardcoded test prompt
         response = openai.Completion.create(
             engine="text-davinci-002",
-            prompt=conversation,
-            max_tokens=2048
+            prompt=test_prompt,  # Use test prompt
+            max_tokens=50  # Reduced max tokens for testing
         )
         print(f"OpenAI API Response: {response}")
         print(f"Raw Bot Response: {response.choices[0].text}")
