@@ -15,14 +15,16 @@ def get_completion(messages):
         limited_messages = messages[-10:]
         conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
         
-        # Log the API request details
-        logging.info(f"Sending API request with prompt: {conversation}, engine: text-davinci-002, max_tokens: 2048")
+        payload = {
+            "engine": "text-davinci-002",
+            "prompt": conversation,
+            "max_tokens": 2048
+        }
         
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=conversation,
-            max_tokens=2048
-        )
+        # Log the API request payload
+        logging.info(f"Sending API request with payload: {json.dumps(payload)}")
+        
+        response = openai.Completion.create(**payload)
         logging.info(f"OpenAI API Response: {response}")
         logging.info(f"Raw Bot Response: {response.choices[0].text}")
         completion = response.choices[0].text.strip()
@@ -51,20 +53,19 @@ def get_completion_route():
 
 def get_bot_response(conversation_history):
     try:
-        # Filter out lines where the bot didn't respond
         filtered_history = [line for line in conversation_history.split('\n') if not (line.startswith('bot: ') and len(line) == 5)]
-        
-        # Reconstruct the conversation
         conversation = "\n".join(filtered_history)
         
-        # Log the API request details
-        logging.info(f"Sending API request with filtered prompt: {conversation}, engine: text-davinci-002, max_tokens: 2048")
+        payload = {
+            "engine": "text-davinci-002",
+            "prompt": conversation,
+            "max_tokens": 2048
+        }
         
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=conversation,
-            max_tokens=2048
-        )
+        # Log the API request payload
+        logging.info(f"Sending API request with payload: {json.dumps(payload)}")
+        
+        response = openai.Completion.create(**payload)
         logging.info(f"OpenAI API Response: {response}")
         logging.info(f"Raw Bot Response: {response.choices[0].text}")
         return response.choices[0].text.strip()
