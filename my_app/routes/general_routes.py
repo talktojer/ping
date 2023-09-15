@@ -12,8 +12,9 @@ import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import openai
-from my_app.routes.openai_routes import get_bot_response
+from my_app.routes.openai_routes import get_completion  # Changed from get_bot_response to get_completion
 import logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 limiter = Limiter(app=app, key_func=get_remote_address)
 
@@ -82,7 +83,6 @@ def send_message():
     username = data.get('username')
     message = data.get('message')
 
-    # Create and commit the user's message
     new_message = ChatMessage(username=username, message=message, unique_id=unique_id)
     logging.info(f"Committed messages to the database. Unique ID: {unique_id}")
     db.session.add(new_message)
@@ -90,13 +90,14 @@ def send_message():
 
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
-        conversation = "\n".join([f"{msg.username}: {msg.message}" for msg in last_ten_messages])
+        
+        # Prepare the message list for OpenAI API call
+        messages_for_openai = [{'username': msg.username, 'message': msg.message} for msg in reversed(last_ten_messages)]
 
-        # Debugging Step 1: Check bot response
-        bot_response = get_bot_response(conversation)
+        # Get bot response
+        bot_response = get_completion(messages_for_openai)
         logging.debug(f"Bot response received: {bot_response}")
 
-        # Debugging Step 2: Handle None case
         if bot_response is not None:
             new_bot_message = ChatMessage(username="bot", message=bot_response)
             db.session.add(new_bot_message)
@@ -106,7 +107,7 @@ def send_message():
             logging.warning("Bot response is None. Skipping database insertion.")
 
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")
-    return jsonify({'status': 'success'})
+    return jsonify({'status': 'success'})asd
 
 
 
