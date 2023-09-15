@@ -15,32 +15,31 @@ MAX_CONTEXT_QUESTIONS = 10
 
 def get_completion(messages):
     try:
-        # Initialize the conversation string
-        conversation = ""
-        
+        # Initialize the messages array for OpenAI API
+        api_messages = []
+
         # Limit the messages to the last 10
         limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
 
-        # Build the conversation string
+        # Build the messages array for OpenAI API
         for msg in limited_messages:
-            conversation += f"{msg['username']}: {msg['message']}\n"
+            api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
 
         # Add an explicit question to the prompt
-        conversation += "admin: Can you hear me, bot?"
+        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
 
         payload = {
             "model": "gpt-3.5-turbo",  # or "text-davinci-003"
-            "prompt": "Hello, can you hear me?",
-            "max_tokens": 50
+            "messages": api_messages,
+            "max_tokens": MAX_TOKENS
         }
 
-
-        response = openai.Completion.create(**payload)
+        response = openai.ChatCompletion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
 
         if response and response.choices:
-            completion = response.choices[0].text.strip()
+            completion = response.choices[0].message['content'].strip()
             logging.info(f"Raw Bot Response: {completion}")
             return completion
         else:
