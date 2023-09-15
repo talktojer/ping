@@ -29,11 +29,11 @@ def get_completion(messages):
         conversation += "admin: Can you hear me, bot?"
 
         payload = {
-            "model": "text-davinci-002",
+            "model": "gpt-3.5-turbo",  # or "text-davinci-003"
             "prompt": "Hello, can you hear me?",
-            "max_tokens": 50,
-            "temperature": 0.7
+            "max_tokens": 50
         }
+
 
         response = openai.Completion.create(**payload)
 
