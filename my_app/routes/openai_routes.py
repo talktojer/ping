@@ -15,23 +15,25 @@ MAX_CONTEXT_QUESTIONS = 10
 
 def get_completion(messages):
     try:
-        # ... (existing code)
+        # Initialize the conversation string
+        conversation = ""
+        
+        # Limit the messages to the last 10
+        limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
+
+        # Build the conversation string
+        for msg in limited_messages:
+            conversation += f"{msg['username']}: {msg['message']}\n"
 
         # Add an explicit question to the prompt
-        conversation += "\nadmin: Can you hear me, bot?"
+        conversation += "admin: Can you hear me, bot?"
 
-        # Add more parameters to the payload
         payload = {
             "model": "text-davinci-002",
             "prompt": conversation,
             "max_tokens": 2048,
-            "temperature": 0.7  # Adding temperature
+            "temperature": 0.7
         }
-
-
-        logging.info(f"Sending API request with payload: {payload}")
-
-        # Send the API request
         response = openai.Completion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
