@@ -19,7 +19,7 @@ def get_completion(messages):
         
         payload = {
             "engine": "text-davinci-002",
-            "prompt": json.dumps(conversation),  # Using json.dumps here
+            "prompt": json.dumps(conversation),  # Uniformly using json.dumps
             "max_tokens": 2048
         }
 
@@ -55,12 +55,12 @@ def get_bot_response(conversation_history):
         filtered_history = [line for line in conversation_history.split('\n') if not (line.startswith('bot: ') and len(line) == 5)]
         conversation = [{"role": "user", "content": line} for line in filtered_history]
         
+
         payload = {
             "engine": "text-davinci-002",
-            "prompt": conversation,
+            "prompt": json.dumps(conversation),  # Adding json.dumps for uniformity
             "max_tokens": 2048
         }
-        
         logging.info(f"Sending API request with payload: {payload}")
         
         response = openai.Completion.create(**payload)
