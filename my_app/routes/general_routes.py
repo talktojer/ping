@@ -107,7 +107,7 @@ def send_message():
             logging.warning("Bot response is None. Skipping database insertion.")
 
     logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")
-    return jsonify({'status': 'success'})asd
+    return jsonify({'status': 'success'})
 
 
 
