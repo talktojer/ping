@@ -34,7 +34,7 @@ def get_completion(messages):
         }
 
         # Log the payload for debugging
-        logging.info(f"Sending API request with payload: {payload}")
+        logging.info(f"Sending API request with payload: {json.dumps(payload, indent=4)}")
 
         response = openai.ChatCompletion.create(**payload)
 
@@ -50,7 +50,7 @@ def get_completion(messages):
     except Exception as e:
         logging.error(f"Error: {e}")
         return None
-        
+
 @openai_routes.route('/get_completion', methods=['POST'])
 def get_completion_route():
     data = request.json
