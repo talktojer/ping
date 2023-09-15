@@ -31,7 +31,7 @@ def get_completion(messages):
             # api_messages.append({"role": "assistant", "content": "Previous assistant response"})
 
         # Add an explicit question to the prompt
-        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
+#        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
 
         payload = {
             "model": "gpt-3.5-turbo",  # or "text-davinci-003"
