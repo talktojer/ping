@@ -17,26 +17,26 @@ def get_completion(messages):
     try:
         # Limit the messages to the last 10
         limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
-        
-        # Build the messages list for the conversation
-        conversation = [{"role": "user", "content": f"{msg['username']}: {msg['message']}"} for msg in limited_messages]
+
+        # Build the conversation string
+        conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
 
         # Create the payload
         payload = {
-            "engine": "text-davinci-002",
-            "messages": conversation,
+            "model": "text-davinci-002",
+            "prompt": conversation,
             "max_tokens": MAX_TOKENS
         }
 
         logging.info(f"Sending API request with payload: {payload}")
-        
+
         # Send the API request
-        response = openai.ChatCompletion.create(**payload)
-        
+        response = openai.Completion.create(**payload)
+
         logging.info(f"OpenAI API Response: {response}")
-        
+
         if response and response.choices:
-            completion = response.choices[0].message.content.strip()
+            completion = response.choices[0].text.strip()
             logging.info(f"Raw Bot Response: {completion}")
             return completion
         else:
