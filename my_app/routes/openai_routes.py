@@ -3,34 +3,40 @@ import openai
 import os
 import json
 import logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
-
+# Configure OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
 
+MAX_TOKENS = 2048
+MAX_CONTEXT_QUESTIONS = 10
 
 def get_completion(messages):
-    
     try:
-        limited_messages = messages[-10:]
-        conversation = [{"role": "user", "content": f"{msg['username']}: {msg['message']}"} for msg in limited_messages]
+        # Limit the messages to the last 10
+        limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
         
+        # Build the messages list for the conversation
+        conversation = [{"role": "user", "content": f"{msg['username']}: {msg['message']}"} for msg in limited_messages]
+
+        # Create the payload
         payload = {
             "engine": "text-davinci-002",
-            "prompt": json.dumps(conversation),  # Uniformly using json.dumps
-            "max_tokens": 2048
+            "messages": conversation,
+            "max_tokens": MAX_TOKENS
         }
-
 
         logging.info(f"Sending API request with payload: {payload}")
         
-        response = openai.Completion.create(**payload)
+        # Send the API request
+        response = openai.ChatCompletion.create(**payload)
+        
         logging.info(f"OpenAI API Response: {response}")
         
         if response and response.choices:
-            completion = response.choices[0].text.strip()
+            completion = response.choices[0].message.content.strip()
             logging.info(f"Raw Bot Response: {completion}")
             return completion
         else:
@@ -49,24 +55,3 @@ def get_completion_route():
 
     completion = get_completion(messages)
     return jsonify({'completion': completion})
-
-def get_bot_response(conversation_history):
-    try:
-        filtered_history = [line for line in conversation_history.split('\n') if not (line.startswith('bot: ') and len(line) == 5)]
-        conversation = [{"role": "user", "content": line} for line in filtered_history]
-        
-
-        payload = {
-            "engine": "text-davinci-002",
-            "prompt": json.dumps(conversation),  # Adding json.dumps for uniformity
-            "max_tokens": 2048
-        }
-        logging.info(f"Sending API request with payload: {payload}")
-        
-        response = openai.Completion.create(**payload)
-        logging.info(f"OpenAI API Response: {response}")
-        logging.info(f"Raw Bot Response: {response.choices[0].text}")
-        return response.choices[0].text.strip()
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return None
