@@ -15,18 +15,19 @@ MAX_CONTEXT_QUESTIONS = 10
 
 def get_completion(messages):
     try:
-        # Limit the messages to the last 10
-        limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
+        # ... (existing code)
 
-        # Build the conversation string
-        conversation = "\n".join([f"{msg['username']}: {msg['message']}" for msg in limited_messages])
+        # Add an explicit question to the prompt
+        conversation += "\nadmin: Can you hear me, bot?"
 
-        # Create the payload
+        # Add more parameters to the payload
         payload = {
             "model": "text-davinci-002",
             "prompt": conversation,
-            "max_tokens": MAX_TOKENS
+            "max_tokens": 2048,
+            "temperature": 0.7  # Adding temperature
         }
+
 
         logging.info(f"Sending API request with payload: {payload}")
 
