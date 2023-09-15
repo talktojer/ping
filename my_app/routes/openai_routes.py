@@ -30,10 +30,11 @@ def get_completion(messages):
 
         payload = {
             "model": "text-davinci-002",
-            "prompt": conversation,
-            "max_tokens": 2048,
+            "prompt": "Hello, can you hear me?",
+            "max_tokens": 50,
             "temperature": 0.7
         }
+
         response = openai.Completion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
