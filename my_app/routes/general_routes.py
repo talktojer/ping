@@ -71,8 +71,6 @@ def send_message():
     unique_id = str(uuid.uuid4())
     client_ip = request.remote_addr
 
-
-
     existing_message = ChatMessage.query.filter_by(unique_id=unique_id).first()
     if existing_message:
         return jsonify({'status': 'duplicate'}), 409
@@ -85,28 +83,31 @@ def send_message():
     message = data.get('message')
 
     # Create and commit the user's message
-    new_message = ChatMessage(username=username, message=message, unique_id=unique_id)  # Added unique_id
+    new_message = ChatMessage(username=username, message=message, unique_id=unique_id)
     logging.info(f"Committed messages to the database. Unique ID: {unique_id}")
     db.session.add(new_message)
     db.session.commit()
 
-    global bot_command_detected
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
         conversation = "\n".join([f"{msg.username}: {msg.message}" for msg in last_ten_messages])
-        
-        bot_response = get_bot_response(conversation)  # Call the new function
 
-        logging.info(f"Bot Response: {bot_response}")  # Replaced print with logging.info
+        # Debugging Step 1: Check bot response
+        bot_response = get_bot_response(conversation)
+        logging.debug(f"Bot response received: {bot_response}")
 
-        new_bot_message = ChatMessage(username="bot", message=bot_response)
-        db.session.add(new_bot_message)
-        db.session.commit()
+        # Debugging Step 2: Handle None case
+        if bot_response is not None:
+            new_bot_message = ChatMessage(username="bot", message=bot_response)
+            db.session.add(new_bot_message)
+            db.session.commit()
+            logging.info(f"Committed bot message: {new_bot_message.message}")
+        else:
+            logging.warning("Bot response is None. Skipping database insertion.")
 
-        logging.info(f"Committed bot message: {new_bot_message.message}")  # Replaced print with logging.info
-
-    logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")  # Existing debug log
+    logging.debug(f"Committed messages to the database. Unique ID: {unique_id}")
     return jsonify({'status': 'success'})
+
 
 
 @general_routes.route('/get_messages', methods=['GET'])
