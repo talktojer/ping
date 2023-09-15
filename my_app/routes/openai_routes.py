@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Configure OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
-
 MAX_TOKENS = 2048
 MAX_CONTEXT_QUESTIONS = 10
 INSTRUCTIONS = "You are a helpful assistant."
@@ -32,7 +31,7 @@ def get_completion(messages):
             # api_messages.append({"role": "assistant", "content": "Previous assistant response"})
 
         # Add an explicit question to the prompt
-#        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
+        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
 
         payload = {
             "model": "gpt-3.5-turbo",  # or "text-davinci-003"
@@ -56,16 +55,6 @@ def get_completion(messages):
     except Exception as e:
         logging.error(f"Error: {e}")
         return None
-
-@openai_routes.route('/get_completion', methods=['POST'])
-def get_completion_route():
-    data = request.json
-    messages = data.get('messages')
-    if not messages:
-        return jsonify({'error': 'No messages provided'}), 400
-
-    completion = get_completion(messages)
-    return jsonify({'completion': completion})
 
 @openai_routes.route('/get_completion', methods=['POST'])
 def get_completion_route():
