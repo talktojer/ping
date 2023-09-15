@@ -17,25 +17,26 @@ def get_completion(messages):
         # Initialize the messages array for OpenAI API
         api_messages = []
 
-        # Limit the messages to the last 10
+        # Limit the messages to the last 10, assuming messages are in chronological order
         limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
 
         # Build the messages array for OpenAI API
         for msg in limited_messages:
-            api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
+            if 'bot' in msg['username']:
+                api_messages.append({"role": "system", "content": f"{msg['message']}"})
+            else:
+                api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
 
-        # Add an explicit question to the prompt
-        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
+        # No need to add an explicit question here, as it should be part of the incoming `messages`
+        # api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
 
         payload = {
-            "model": "gpt-3.5-turbo",  # or "text-davinci-003"
+            "model": "gpt-3.5-turbo",
             "messages": api_messages,
             "max_tokens": MAX_TOKENS
         }
 
-        # Log the payload for debugging
         logging.info(f"Sending API request with payload: {json.dumps(payload, indent=4)}")
-
         response = openai.ChatCompletion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
