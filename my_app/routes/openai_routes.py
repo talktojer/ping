@@ -12,31 +12,36 @@ openai_routes = Blueprint('openai_routes', __name__)
 
 MAX_TOKENS = 2048
 MAX_CONTEXT_QUESTIONS = 10
+INSTRUCTIONS = "You are a helpful assistant."
+
 def get_completion(messages):
     try:
         # Initialize the messages array for OpenAI API
         api_messages = []
 
-        # Limit the messages to the last 10, assuming messages are in chronological order
+        # System instruction
+        api_messages.append({"role": "system", "content": INSTRUCTIONS})
+        
+        # Limit the messages to the last 10
         limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
 
         # Build the messages array for OpenAI API
         for msg in limited_messages:
-            if 'bot' in msg['username']:
-                api_messages.append({"role": "system", "content": f"{msg['message']}"})
-            else:
-                api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
+            api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
+            # Include the assistant's previous responses here if you have them
+            # api_messages.append({"role": "assistant", "content": "Previous assistant response"})
 
-        # No need to add an explicit question here, as it should be part of the incoming `messages`
-        # api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
+        # Add an explicit question to the prompt
+#        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
 
         payload = {
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-3.5-turbo",  # or "text-davinci-003"
             "messages": api_messages,
             "max_tokens": MAX_TOKENS
         }
 
         logging.info(f"Sending API request with payload: {json.dumps(payload, indent=4)}")
+
         response = openai.ChatCompletion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
@@ -51,6 +56,16 @@ def get_completion(messages):
     except Exception as e:
         logging.error(f"Error: {e}")
         return None
+
+@openai_routes.route('/get_completion', methods=['POST'])
+def get_completion_route():
+    data = request.json
+    messages = data.get('messages')
+    if not messages:
+        return jsonify({'error': 'No messages provided'}), 400
+
+    completion = get_completion(messages)
+    return jsonify({'completion': completion})
 
 @openai_routes.route('/get_completion', methods=['POST'])
 def get_completion_route():
