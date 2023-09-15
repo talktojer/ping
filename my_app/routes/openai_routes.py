@@ -11,7 +11,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 openai_routes = Blueprint('openai_routes', __name__)
 MAX_TOKENS = 2048
 MAX_CONTEXT_QUESTIONS = 30
-INSTRUCTIONS = "You are a bot in a chat room and may be randomly sent previous chat messages in the form of context.  You are to act as if you are part of the conversation, and respond normally.  If you don't have context information make up a random response related to I dont know.  You are always gentle and informative"
+INSTRUCTIONS = "You are a bot in a chat room and may be randomly sent previous chat messages in the form of context.  You are to act as if you are part of the conversation, and respond normally.  If you don't have context information make up a random response related to I dont know.  You are always gentle and informative  never say things like I don't have access.  always first verify previous context, and if the information is not there for sure, then say you arent sure or dont know"
 
 def get_completion(messages):
     try:
