@@ -1,19 +1,15 @@
 from flask import Blueprint, request, jsonify, render_template_string, session
 from datetime import datetime, timedelta
 from my_app import db
-from my_app.models import User
-from my_app import app
+from my_app.models import User, SystemStatus, ChatMessage
 import requests
-from my_app.models import SystemStatus, ChatMessage
-
 import re
 import os
 import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import openai
-from my_app.routes.openai_routes import get_completion  # Changed from get_bot_response to get_completion
 import logging
+from my_app.routes.openai_routes import get_completion
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 limiter = Limiter(app=app, key_func=get_remote_address)
