@@ -12,7 +12,6 @@ openai_routes = Blueprint('openai_routes', __name__)
 
 MAX_TOKENS = 2048
 MAX_CONTEXT_QUESTIONS = 10
-
 def get_completion(messages):
     try:
         # Initialize the messages array for OpenAI API
@@ -34,6 +33,9 @@ def get_completion(messages):
             "max_tokens": MAX_TOKENS
         }
 
+        # Log the payload for debugging
+        logging.info(f"Sending API request with payload: {payload}")
+
         response = openai.ChatCompletion.create(**payload)
 
         logging.info(f"OpenAI API Response: {response}")
@@ -48,7 +50,7 @@ def get_completion(messages):
     except Exception as e:
         logging.error(f"Error: {e}")
         return None
-
+        
 @openai_routes.route('/get_completion', methods=['POST'])
 def get_completion_route():
     data = request.json
