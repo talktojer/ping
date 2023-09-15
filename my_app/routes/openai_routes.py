@@ -47,6 +47,7 @@ def get_completion(messages):
 
         if response and response.choices:
             completion = response.choices[0].message['content'].strip()
+            completion = completion.replace("bot:", "").strip()
             logging.info(f"Raw Bot Response: {completion}")
             return completion
         else:
