@@ -29,7 +29,7 @@ def get_completion(messages):
         # Build the messages array for OpenAI API
         for msg in limited_messages:
             role = "assistant" if msg['username'] == 'bot' else msg['username']
-
+            api_messages.append({"role": role, "content": f"user: {msg['message']}"})
         
             # Include the assistant's previous responses here if you have them
             # api_messages.append({"role": "assistant", "content": "Previous assistant response"})
