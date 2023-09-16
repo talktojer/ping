@@ -98,7 +98,7 @@ def send_message():
             for msg in reversed(last_ten_messages) 
             if msg.username != "bot"  # Exclude messages from "bot"
         ]
-
+        messages_for_openai.reverse()
 
         # Get bot response
         bot_response = get_completion(messages_for_openai)
