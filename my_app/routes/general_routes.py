@@ -95,19 +95,17 @@ def send_message():
     db.session.commit()
 
     if detect_bot_mention(message):
-        last_ten_messages = fetch_last_n_messages(30)
-        
+        last_n_messages = fetch_last_n_messages(30)  # fetching last 30 messages
         
         # Prepare the message list for OpenAI API call
         messages_for_openai = [
             {'username': msg.username, 'message': msg.message} 
-            for msg in reversed(last_n_messages)
+            for msg in last_n_messages
         ]
         
         newest_message = {'username': username, 'message': message}
-        messages_for_openai.append(newest_message)    
-#        messages_for_openai.append(newest_message)    
-
+        messages_for_openai.append(newest_message)  # Adding the newest message to the end
+        
         # Get bot response
         bot_response = get_completion(messages_for_openai)
         logging.debug(f"Bot response received: {bot_response}")
