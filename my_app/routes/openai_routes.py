@@ -23,15 +23,14 @@ def get_completion(messages):
         # System instruction
         api_messages.append({"role": "system", "content": INSTRUCTIONS})
         
-        # Limit the messages to the last 30
+        # Limit the messages to the last 10
         limited_messages = messages[-MAX_CONTEXT_QUESTIONS:]
 
         # Build the messages array for OpenAI API
         for msg in limited_messages:
-            api_messages.append({"role": msg['username'], "content": f"{msg['username']}: {msg['message']}"})
+            api_messages.append({"role": "user", "content": f"{msg['username']}: {msg['message']}"})
             # Include the assistant's previous responses here if you have them
             # api_messages.append({"role": "assistant", "content": "Previous assistant response"})
-
 
         # Add an explicit question to the prompt
 #        api_messages.append({"role": "user", "content": "admin: Can you hear me, bot?"})
