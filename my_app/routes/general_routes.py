@@ -89,7 +89,7 @@ def send_message():
     db.session.commit()
 
     if detect_bot_mention(message):
-        last_ten_messages = fetch_last_n_messages(10)
+        last_ten_messages = fetch_last_n_messages(30)
         
         
         # Prepare the message list for OpenAI API call
