@@ -99,6 +99,8 @@ def send_message():
             if msg.username != "bot"  # Exclude messages from "bot"
         ]
         messages_for_openai.reverse()
+        newest_message = {'username': username, 'message': message}
+        messages_for_openai.append(newest_message)    
 
         # Get bot response
         bot_response = get_completion(messages_for_openai)
