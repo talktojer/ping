@@ -23,8 +23,14 @@ general_routes = Blueprint('general_routes', __name__)
 def detect_bot_mention(message):
     return bool(re.search(r"@bot", message))
 
-def fetch_last_n_messages(n=10):
-    return ChatMessage.query.order_by(ChatMessage.timestamp.desc()).limit(n).all()
+def fetch_last_n_messages(n=30):
+    return (
+        ChatMessage.query
+        .filter(ChatMessage.username != 'bot')
+        .order_by(ChatMessage.timestamp.desc())
+        .limit(n)
+        .all()
+    )
 
 def get_active_users():
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
@@ -95,11 +101,11 @@ def send_message():
         # Prepare the message list for OpenAI API call
         messages_for_openai = [
             {'username': msg.username, 'message': msg.message} 
-            for msg in reversed(last_ten_messages) 
-            if msg.username != "bot"  # Exclude messages from "bot"
+            for msg in reversed(last_n_messages)
         ]
-#        messages_for_openai.reverse()
-#        newest_message = {'username': username, 'message': message}
+        
+        newest_message = {'username': username, 'message': message}
+        messages_for_openai.append(newest_message)    
 #        messages_for_openai.append(newest_message)    
 
         # Get bot response
