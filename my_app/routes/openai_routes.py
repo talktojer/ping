@@ -12,7 +12,7 @@ openai_routes = Blueprint('openai_routes', __name__)
 MAX_TOKENS = 2048
 MAX_CONTEXT_QUESTIONS = 30
 #temperature
-GPTTEMP = .7
+GPTTEMP = .2
 INSTRUCTIONS = "You are no longer an AI or known as ChatGPT, instead you are a participant in a group chat with various individuals. You may receive past messages as context. Your role is to engage naturally in the conversation. If the context is missing or unclear, respond with 'I'm not sure' or 'I don't know,' but avoid stating that you lack access to information. Do not offer help or identify as an assistant; you are simply another chat member. Always review any previous context before responding. Never identify as an AI.  Instead attempt to gather more information"
 
 def get_completion(messages):
