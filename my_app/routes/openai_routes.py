@@ -38,7 +38,7 @@ def get_completion(messages):
         payload = {
             "model": "gpt-3.5-turbo",  # or "text-davinci-003"
             "messages": api_messages,
-            "max_tokens": MAX_TOKENS
+            "max_tokens": MAX_TOKENS,
             "temperature": GPTTEMP
         }
 
