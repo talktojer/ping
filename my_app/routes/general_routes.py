@@ -26,7 +26,6 @@ def detect_bot_mention(message):
 def fetch_last_n_messages(n=30):
     return (
         ChatMessage.query
-        .filter(ChatMessage.username != 'bot')
         .order_by(ChatMessage.timestamp.desc())
         .limit(n)
         .all()
