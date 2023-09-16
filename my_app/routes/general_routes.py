@@ -103,8 +103,8 @@ def send_message():
             for msg in last_n_messages
         ]
         
-        newest_message = {'username': username, 'message': message}
-        messages_for_openai.append(newest_message)  # Adding the newest message to the end
+#        newest_message = {'username': username, 'message': message}
+#        messages_for_openai.append(newest_message)  # Adding the newest message to the end
         
         # Get bot response
         bot_response = get_completion(messages_for_openai)
