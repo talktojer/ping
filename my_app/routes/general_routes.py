@@ -96,7 +96,7 @@ def send_message():
 
     if detect_bot_mention(message):
         last_n_messages = fetch_last_n_messages(30)  # fetching last 30 messages
-        
+        last_n_messages = sorted(last_n_messages, key=lambda x: x.timestamp)
         # Prepare the message list for OpenAI API call
         messages_for_openai = [
             {'username': msg.username, 'message': msg.message} 
