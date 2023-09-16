@@ -91,8 +91,14 @@ def send_message():
     if detect_bot_mention(message):
         last_ten_messages = fetch_last_n_messages(10)
         
+        
         # Prepare the message list for OpenAI API call
-        messages_for_openai = [{'username': msg.username, 'message': msg.message} for msg in reversed(last_ten_messages)]
+        messages_for_openai = [
+            {'username': msg.username, 'message': msg.message} 
+            for msg in reversed(last_ten_messages) 
+            if msg.username != "bot"  # Exclude messages from "bot"
+        ]
+
 
         # Get bot response
         bot_response = get_completion(messages_for_openai)
