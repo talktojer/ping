@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head><title>PING JERS PHONE</title></head>
+    <head>
+        <title>PING JERS PHONE</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <!-- other metadata, styles, and scripts -->
+    </head>
+    <body>
+        <header style="background-color: blue; color: white; padding: 10px 0; text-align: center;">
+            <h1>PING JER'S PHONE</h1>
+        </header>
 <body>
     <style>
         #activeUsers {
@@ -74,22 +82,8 @@
         </ul>
     </div>
 
-    <footer>
-        {% if username %}
-            <p>Logged in as: {{ username }}</p>
-            <a href="/logout">Logout</a><BR>
-        {% else %}
-            <a href="/login">Login</a><BR>
-        {% endif %}
-        {% if username == 'admin' %}
-        <a href="/admin">Go to Admin Page</a><BR>
-        {% endif %}
-        <small>
-            I wrote this just to experiment with the ntfy app, and Cloudflare tunnels, and to practice a little with Python.<br>
-            All it does is uses ntfy to send me a message to my phone saying
-someone "Pinged" me.
-            I don't even see your IP with this app.
-        </small>
+    <footer style="position: fixed; bottom: 0; right: 0; background-color: white; padding: 5px 15px; border-top: 1px solid black;">
+        <small>Powered by Another Day Systems</small>
     </footer>
 <script>
     function updateStatus() {
