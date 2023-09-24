@@ -58,21 +58,14 @@
         </div>
     </div>
 
-    <!-- Chatbox -->
-    {% if username %}
-    <div id="chatBox">
-        <div id="messages">
-            <!-- Placeholder for messages -->
+    <div id="chatContainer" style="position: relative; padding-bottom: 20px;">
+        <!-- Chatbox -->
+        {% if username %}
+        <div id="chatBox">
+            <!-- ... rest of the chat box content ... -->
         </div>
-        <div id="inputContainer">
-            <input type="text" id="chatInput" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-        {% if username == 'admin' %}
-        <button id="clearMessages" onclick="clearAllMessages()">Clear All Messages</button>
         {% endif %}
     </div>
-    {% endif %}
 
     <div id="activeUsers" style="float: right;">
         <h3>Active Users</h3>
