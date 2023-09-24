@@ -18,3 +18,13 @@ header a:hover {
     color: black;
     border: 1px solid black;
 }
+#chatContainer {
+    width: 100%;
+    max-width: 1200px; /* or whatever maximum width you prefer */
+    margin: 0 auto; /* centers the container */
+}
+
+#chatBox {
+    position: relative; /* or absolute, depending on your layout needs */
+    /* ... other styles ... */
+}
