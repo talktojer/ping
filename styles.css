@@ -1,38 +1,76 @@
+/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: white;
     color: black;
     margin: 0;
     padding: 0;
+    padding-bottom: 60px; /* Adjust based on the height of your footer */
 }
 
 header {
+    background-color: blue;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
     box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
 }
 
-body {
-    padding-bottom: 60px; /* Adjust based on the height of your footer */
-}
 header a:hover {
     background-color: white;
     color: black;
     border: 1px solid black;
 }
+
+/* Chat Box Styles */
 #chatContainer {
     width: 100%;
-    max-width: 1200px; /* or whatever maximum width you prefer */
-    margin: 0 auto; /* centers the container */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 #chatBox {
-    position: relative; /* or absolute, depending on your layout needs */
-    /* ... other styles ... */
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 300px;
+    height: 400px;
+    background-color: #f2f2f2;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0px -3px 10px rgba(0,0,0,0.2);
 }
 
-/* For screens smaller than 768px */
+#messages {
+    height: 340px;
+    overflow-y: scroll;
+    flex-grow: 1;
+}
+
+#chatInput {
+    width: 100%;
+}
+
+#inputContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Active Users Styles */
+#activeUsers {
+    float: right;
+}
+
+.idleTime {
+    font-size: 0.8em;
+}
+
+/* Responsive Design */
 @media (max-width: 767px) {
     #chatBox {
-        width: 100%; /* make chat window full width on small screens */
-        height: auto; /* adjust height as needed */
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        right: 0;
     }
 }
