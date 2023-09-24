@@ -28,3 +28,11 @@ header a:hover {
     position: relative; /* or absolute, depending on your layout needs */
     /* ... other styles ... */
 }
+
+/* For screens smaller than 768px */
+@media (max-width: 767px) {
+    #chatBox {
+        width: 100%; /* make chat window full width on small screens */
+        height: auto; /* adjust height as needed */
+    }
+}
